@@ -1,0 +1,24 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - java: 11 # LTS up to 2023-09
+          - java: 17 # LTS up to 2026-09
+          - java: 19 # Latest
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: ${{ matrix.java }}
+        cache: sbt
+    - name: Test toml/parse
+      working-directory: code
+      run: sbt -v "toml-parseJVM/test"
