@@ -27,4 +27,4 @@ jobs:
         cache: sbt
     - name: Test toml/parse
       working-directory: code
-      run: sbt -v "toml-parseJVM/test"
+      run: sbt -v "toml-parseJVM/test" "toml-parseJS/test" "toml-parseNative/test"
