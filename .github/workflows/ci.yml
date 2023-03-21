@@ -14,7 +14,7 @@ jobs:
         include:
           - java: 11 # LTS up to 2023-09
           - java: 17 # LTS up to 2026-09
-          - java: 19 # Latest
+          - java: 20 # Latest
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -22,7 +22,7 @@ jobs:
     - name: Setup JDK
       uses: actions/setup-java@v3
       with:
-        distribution: temurin
+        distribution: zulu
         java-version: ${{ matrix.java }}
         cache: sbt
     - name: Test toml/parse
