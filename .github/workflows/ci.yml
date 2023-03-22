@@ -25,6 +25,9 @@ jobs:
         distribution: zulu
         java-version: ${{ matrix.java }}
         cache: sbt
-    - name: Test toml/parse
+    - name: Compile TOML
+      working-directory: code
+      run: sbt -v "tomlJVM/compile" "toml-tomltestJVM/compile" "toml-parse-benchJVM/compile"
+    - name: Test TOML/parse
       working-directory: code
       run: sbt -v "toml-parseJVM/test" "toml-parseJS/test" "toml-parseNative/test"
