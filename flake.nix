@@ -21,9 +21,10 @@
           }];
           
           packages = with pkgs;[
-            stdenv.cc
-            bazel_6
             jdk
+            (sbt.override {
+              jre = jdk;
+            })
           ];
         };
 
