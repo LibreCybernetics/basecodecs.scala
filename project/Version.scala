@@ -16,6 +16,6 @@ object Version {
   // Other
 
   lazy val scalaJavaTime      = "2.5.0"
-  lazy val scalatest          = "3.2.15"
+  lazy val scalatest          = "3.2.16"
   lazy val scalatestPlusCheck = scalatest + ".0"
 }
