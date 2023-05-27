@@ -1,6 +1,6 @@
 object Version {
   // Scala
-  lazy val scala = "3.3.0-RC5"
+  lazy val scala = "3.3.0"
 
   // Typelevel
 
