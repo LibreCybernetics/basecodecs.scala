@@ -22,7 +22,7 @@
           
           packages = with pkgs;[
             jdk
-            llvmPackages_latest.clang
+            llvmPackages_15.clang
             nodejs
             (sbt.override {
               jre = jdk;
