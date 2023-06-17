@@ -21,6 +21,7 @@
           }];
           
           packages = with pkgs;[
+            dbmate
             jdk
             llvmPackages_15.clang
             nodejs

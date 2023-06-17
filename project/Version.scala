@@ -16,6 +16,7 @@ object Version {
 
   // Other
 
+  lazy val protoquill         = "4.6.0.1"
   lazy val scalaJavaTime      = "2.5.0"
   lazy val scalatest          = "3.2.16"
   lazy val scalatestPlusCheck = scalatest + ".0"
