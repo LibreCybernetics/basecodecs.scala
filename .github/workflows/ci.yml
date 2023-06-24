@@ -7,6 +7,20 @@ on:
     branches:
       - main
 jobs:
+  fugitiva:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: zulu
+        java-version: 17 # Latest LTS up to 2023-09
+        cache: sbt
+    - name: Compile Fugitiva
+      working-directory: code
+      run: sbt -v "fugitivaJVM/compile"
   test:
     strategy:
       fail-fast: false
