@@ -5,7 +5,7 @@ object Version {
   // Typelevel
 
   lazy val cats              = "2.9.0"
-  lazy val catsEffect        = "3.5.0"
+  lazy val catsEffect        = "3.5.1"
   lazy val catsEffectTesting = "1.5.0"
   lazy val catsParse         = "0.3.10"
 
