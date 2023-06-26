@@ -7,7 +7,7 @@ object Version {
   lazy val cats              = "2.9.0"
   lazy val catsEffect        = "3.5.0"
   lazy val catsEffectTesting = "1.5.0"
-  lazy val catsParse         = "0.3.9"
+  lazy val catsParse         = "0.3.10"
 
   lazy val fabric     = "1.11.2"
   lazy val fs2        = "3.7.0"
