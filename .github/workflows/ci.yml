@@ -21,7 +21,7 @@ jobs:
     - name: Compile Fugitiva
       working-directory: code
       run: sbt -v "fugitivaJVM/compile"
-  test:
+  test-toml:
     strategy:
       fail-fast: false
       matrix:
@@ -45,3 +45,27 @@ jobs:
     - name: Test TOML/parse
       working-directory: code
       run: sbt -v "toml-parseJVM/test" "toml-parseJS/test" "toml-parseNative/test"
+  test-uuidv7:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - java: 11 # LTS up to 2023-09
+          - java: 17 # LTS up to 2026-09
+          - java: 20 # Latest
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: zulu
+        java-version: ${{ matrix.java }}
+        cache: sbt
+    - name: Compile uuidv7
+      working-directory: code
+      run: sbt -v "uuidv7JVM/compile"
+    - name: Test uuidv7
+      working-directory: code
+      run: sbt -v "uuidv7JVM/test" "uuidv7JS/test" "uuidv7Native/test"
