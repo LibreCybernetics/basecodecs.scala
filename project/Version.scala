@@ -11,7 +11,7 @@ object Version {
 
   lazy val fabric     = "1.12.1"
   lazy val fs2        = "3.7.0"
-  lazy val http4s     = "0.23.21"
+  lazy val http4s     = "0.23.22"
   lazy val mouse      = "1.2.1"
   lazy val scalacheck = "1.17.0"
   lazy val scodec     = "2.2.1"
