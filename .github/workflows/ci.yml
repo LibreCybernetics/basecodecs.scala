@@ -21,6 +21,30 @@ jobs:
     - name: Compile Fugitiva
       working-directory: code
       run: sbt -v "fugitivaJVM/compile"
+  test-rfc4648:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - java: 11 # LTS up to 2023-09
+          - java: 17 # LTS up to 2026-09
+          - java: 20 # Latest
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: zulu
+        java-version: ${{ matrix.java }}
+        cache: sbt
+    - name: Compile rfc4648
+      working-directory: code
+      run: sbt -v "rfc4648JVM/compile"
+    - name: Test rfc4648
+      working-directory: code
+      run: sbt -v "rfc4648JVM/test" "rfc4648JS/test" "rfc4648Native/test"
   test-toml:
     strategy:
       fail-fast: false
