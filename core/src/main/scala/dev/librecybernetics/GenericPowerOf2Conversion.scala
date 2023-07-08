@@ -4,7 +4,7 @@ import scala.annotation.tailrec
 
 private type BasePower = 4 | 5 | 6
 
-private[librecybernetics] def mask(basePower: BasePower): Byte = ((1 << basePower) - 1).toByte
+private[librecybernetics] def mask(basePower: Int): Byte = ((1 << basePower) - 1).toByte
 
 private[librecybernetics] def toBasePartialByte(
     currentByte: Byte,
@@ -12,8 +12,13 @@ private[librecybernetics] def toBasePartialByte(
     remainingBits: Int,
     basePower: BasePower
 ): Byte =
-  val bits: Byte = ((currentByte << remainingBits) | (nextByte >> (8 - remainingBits))).toByte
-  (bits & mask(basePower)).toByte
+  val currentBits: Byte =
+    ((currentByte & mask(remainingBits)) << (basePower - remainingBits)).toByte
+  val nextBits: Byte =
+   (nextByte >> (8 - basePower + remainingBits)).toByte
+
+  (currentBits | nextBits).toByte
+end toBasePartialByte
 
 @tailrec
 private[librecybernetics] def toBasePartial(
@@ -23,7 +28,8 @@ private[librecybernetics] def toBasePartial(
     result: Seq[Byte]
 ): Seq[Byte] =
   input match
-    case Nil => result
+    case Nil =>
+      result
 
     case input @ x :: xs if remainingBits > basePower =>
       val bits = x >> (remainingBits - basePower)
@@ -38,6 +44,7 @@ private[librecybernetics] def toBasePartial(
   end match
 
 def toBase(input: Seq[Byte], basePower: BasePower): Seq[Byte] =
+  require(!input.isInstanceOf[collection.immutable.ArraySeq[Byte]])
   toBasePartial(input, 8, basePower, Nil)
 
 @tailrec
@@ -59,8 +66,18 @@ private[librecybernetics] def fromBasePartial(
       val mutatedR = (r | bits).toByte
       fromBasePartial(xs, missingBits - basePower, basePower, result.init :+ mutatedR)
 
-    case x :: xs if missingBits < basePower => ???
+    case x :: Nil if missingBits < basePower =>
+      val bitsC    = (x >> (basePower - missingBits)).toByte
+      val mutatedR = (result.last | bitsC).toByte
+      result.init :+ mutatedR
+
+    case x :: xs if missingBits < basePower =>
+      val bitsC    = (x >> (basePower - missingBits)).toByte
+      val bitsN    = ((x & mask(basePower - missingBits)) << (8 - (basePower - missingBits))).toByte
+      val mutatedR = (result.last | bitsC).toByte
+      fromBasePartial(xs, 8 - (basePower - missingBits), basePower, result.init :+ mutatedR :+ bitsN)
   end match
 
 def fromBase(input: Seq[Byte], basePower: BasePower): Seq[Byte] =
+  require(!input.isInstanceOf[collection.immutable.ArraySeq[Byte]])
   fromBasePartial(input, 0, basePower, Nil)
