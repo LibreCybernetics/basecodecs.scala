@@ -1,11 +1,11 @@
-package dev.librecybernetics
+package dev.librecybernetics.data
 
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.prop.TableDrivenPropertyChecks.Table
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.*
-import org.scalatest.prop.TableDrivenPropertyChecks.Table
 
 class GenericBase2ConversionSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
   def genericExample(input: String, expected: Map[BasePower, Seq[Byte]]): Assertion =
