@@ -9,13 +9,12 @@ import org.scalatest.prop.TableDrivenPropertyChecks.Table
 
 class GenericBase2ConversionSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
   def genericExample(input: String, expected: Map[BasePower, Seq[Byte]]): Assertion =
-    val bytes = input.getBytes
+    genericExample(input.getBytes.toList, expected)
 
+  def genericExample(input: Seq[Byte], expected: Map[BasePower, Seq[Byte]]): Assertion =
     forAll(Table("basePower" -> "encodedValues", expected.toSeq*)) { (base: BasePower, expected: Seq[Byte]) =>
-      val encoded = toBase(bytes.toList, base)
-      val decoded = String(
-        fromBase(expected.toList, base).toArray
-      )
+      val encoded = toBase(input, base)
+      val decoded = fromBase(expected.toList, base)
 
       decoded shouldBe input
       encoded shouldBe expected
@@ -40,18 +39,17 @@ class GenericBase2ConversionSpec extends AnyWordSpec with ScalaCheckPropertyChec
       input shouldBe back
     }
 
-  def toFrom(basePower: BasePower, upperValue: Int): Assertion =
-    forAll(randomByteArray(upperValue)) { (input: Seq[Byte]) =>
-        val converted = fromBase(input, basePower)
-        val back      = toBase(converted, basePower)
-        input.reverse.dropWhile(_ == 0).reverse shouldBe back.reverse.dropWhile(_ == 0).reverse
+  "toBasePartialByte" when {
+    "example 1" in {
+      toBasePartialByte(0, 255.toByte, 3, 5) shouldBe 3.toByte
     }
+  }
 
   // From RFC 4648 § 10
   "spec test vector" when {
     "empty" in genericExample(
       "",
-      Map(
+      Map[BasePower, Seq[Byte]](
         4 -> Nil,
         5 -> Nil,
         6 -> Nil
@@ -59,7 +57,7 @@ class GenericBase2ConversionSpec extends AnyWordSpec with ScalaCheckPropertyChec
     )
     "f" in genericExample(
       "f",
-      Map(
+      Map[BasePower, Seq[Byte]](
         4 -> Seq(6, 6),
         5 -> Seq(12, 24),
         6 -> Seq(25, 32)
@@ -67,7 +65,7 @@ class GenericBase2ConversionSpec extends AnyWordSpec with ScalaCheckPropertyChec
     )
     "fo" in genericExample(
       "fo",
-      Map(
+      Map[BasePower, Seq[Byte]](
         4 -> Seq(6, 6, 6, 15),
         5 -> Seq(12, 25, 23, 16),
         6 -> Seq(25, 38, 60)
@@ -75,7 +73,7 @@ class GenericBase2ConversionSpec extends AnyWordSpec with ScalaCheckPropertyChec
     )
     "foo" in genericExample(
       "foo",
-      Map(
+      Map[BasePower, Seq[Byte]](
         4 -> Seq(6, 6, 6, 15, 6, 15),
         5 -> Seq(12, 25, 23, 22, 30),
         6 -> Seq(25, 38, 61, 47)
@@ -83,7 +81,7 @@ class GenericBase2ConversionSpec extends AnyWordSpec with ScalaCheckPropertyChec
     )
     "foob" in genericExample(
       "foob",
-      Map(
+      Map[BasePower, Seq[Byte]](
         4 -> Seq(6, 6, 6, 15, 6, 15, 6, 2),
         5 -> Seq(12, 25, 23, 22, 30, 24, 16),
         6 -> Seq(25, 38, 61, 47, 24, 32)
@@ -91,22 +89,24 @@ class GenericBase2ConversionSpec extends AnyWordSpec with ScalaCheckPropertyChec
     )
     "fooba" in genericExample(
       "fooba",
-      Map(
+      Map[BasePower, Seq[Byte]](
         4 -> Seq(6, 6, 6, 15, 6, 15, 6, 2, 6, 1),
         5 -> Seq(12, 25, 23, 22, 30, 24, 19, 1),
         6 -> Seq(25, 38, 61, 47, 24, 38, 4)
+      )
+    )
+    "jvm complements 1" in genericExample(
+      Seq[Byte](0, -1),
+      Map[BasePower, Seq[Byte]](
+        4 -> Seq(0, 0, 15, 15),
+        5 -> Seq(0, 3, 31, 16),
+        6 -> Seq(0, 15, 60)
       )
     )
   }
 
   "from . to = identity" when {
     "base 16" in fromTo(4)
-    "base 32" ignore fromTo(5)
-    "base 64" ignore fromTo(6)
-  }
-
-  "to . from = identity" when {
-    "base 16" in toFrom(4, 15)
-    "base 32" ignore toFrom(5, 31)
-    "base 64" ignore toFrom(6, 63)
+    "base 32" in fromTo(5)
+    "base 64" in fromTo(6)
   }
