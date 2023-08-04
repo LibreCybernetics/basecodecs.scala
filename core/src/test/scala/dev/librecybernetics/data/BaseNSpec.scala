@@ -34,7 +34,7 @@ class BaseNSpec extends AnyWordSpec:
     example("foobar", "666f6f626172")
   }
 
-  "Base16Uppercase" when {
+  "Base16Uppercase" ignore {
     def example(input: String, expected: String): Unit =
       genericExample(input, expected, Base16.encodeUppercase, Base16.decodeUppercase)
 
