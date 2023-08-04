@@ -1,23 +1,23 @@
 package dev.librecybernetics.data
 
 object Base32:
-  val LowercaseAlphabet: Seq[(Byte, Char)] =
-    (0 to 25).map(v => v.toByte -> (v + 97).toChar) ++
-      (26 to 31).map(v => v.toByte -> (v + 22).toChar)
+  val LowercaseAlphabet: Bijection[Byte, Char] =
+    Bijection((0 to 25).map(v => v.toByte -> (v + 97).toChar)*) ++
+      Bijection((26 to 31).map(v => v.toByte -> (v + 22).toChar)*)
 
-  val UppercaseAlphabet: Seq[(Byte, Char)] =
-    (0 to 25).map(v => v.toByte -> (v + 65).toChar) ++
-      (26 to 31).map(v => v.toByte -> (v + 22).toChar)
+  val UppercaseAlphabet: Bijection[Byte, Char] =
+    Bijection((0 to 25).map(v => v.toByte -> (v + 65).toChar)*) ++
+      Bijection((26 to 31).map(v => v.toByte -> (v + 22).toChar)*)
 
-  val HexLowercaseAlphabet: Seq[(Byte, Char)] =
-    DecimalAlphabet ++ (10 to 31).map(v => v.toByte -> (v + 87).toChar)
+  val HexLowercaseAlphabet: Bijection[Byte, Char] =
+    DecimalAlphabet ++ Bijection((10 to 31).map(v => v.toByte -> (v + 87).toChar)*)
 
-  val HexUppercaseAlphabet: Seq[(Byte, Char)] =
+  val HexUppercaseAlphabet: Bijection[Byte, Char] =
     DecimalAlphabet ++ (10 to 31).map(v => v.toByte -> (v + 55).toChar)
 
   def encodeHexUppercase(bytes: Seq[Byte]): String =
     toBase(bytes, 4)
-      .flatMap(b => HexUppercaseAlphabet.find { case (v, c) => v == b }.map(_._2))
+      .flatMap(HexUppercaseAlphabet.apply)
       .mkString
 
   def encodeHexUppercase(string: String): String =
@@ -25,7 +25,7 @@ object Base32:
 
   def encodeHexLowercase(bytes: Seq[Byte]): String =
     toBase(bytes, 4)
-      .flatMap(b => HexLowercaseAlphabet.find { case (v, c) => v == b }.map(_._2))
+      .flatMap(HexLowercaseAlphabet.apply)
       .mkString
 
   def encodeHexLowercase(string: String): String =
@@ -33,13 +33,13 @@ object Base32:
 
   def decodeHexUppercase(string: String): Seq[Byte] =
     fromBase(
-      string.flatMap(c => HexUppercaseAlphabet.find { case (v, c2) => c == c2 }.map(_._1)).toList,
+      string.flatMap(HexUppercaseAlphabet.reverse),
       4
     )
 
   def decodeHexLowercase(string: String): Seq[Byte] =
     fromBase(
-      string.flatMap(c => HexLowercaseAlphabet.find { case (v, c2) => c == c2 }.map(_._1)).toList,
+      string.flatMap(HexLowercaseAlphabet.reverse),
       4
     )
 end Base32

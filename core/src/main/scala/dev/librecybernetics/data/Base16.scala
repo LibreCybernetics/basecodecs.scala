@@ -1,15 +1,15 @@
 package dev.librecybernetics.data
 
 object Base16:
-  val LowercaseAlphabet: Seq[(Byte, Char)] =
-    DecimalAlphabet ++ (10 to 15).map(v => v.toByte -> (v + 87).toChar)
+  val LowercaseAlphabet: Bijection[Byte, Char] =
+    DecimalAlphabet ++ Bijection((10 to 15).map(v => v.toByte -> (v + 87).toChar)*)
 
-  val UppercaseAlphabet: Seq[(Byte, Char)] =
-    DecimalAlphabet ++ (10 to 15).map(v => v.toByte -> (v + 55).toChar)
+  val UppercaseAlphabet: Bijection[Byte, Char] =
+    DecimalAlphabet ++ Bijection((10 to 15).map(v => v.toByte -> (v + 55).toChar)*)
 
   def encodeUppercase(bytes: Seq[Byte]): String =
     toBase(bytes, 4)
-      .flatMap(b => UppercaseAlphabet.find { case (v, c) => v == b }.map(_._2))
+      .flatMap(UppercaseAlphabet.apply)
       .mkString
 
   println(UppercaseAlphabet)
@@ -18,7 +18,7 @@ object Base16:
 
   def encodeLowercase(bytes: Seq[Byte]): String =
     toBase(bytes, 4)
-      .flatMap(b => LowercaseAlphabet.find { case (v, c) => v == b }.map(_._2))
+      .flatMap(LowercaseAlphabet.apply)
       .mkString
 
   def encodeLowercase(string: String): String =
@@ -26,13 +26,13 @@ object Base16:
 
   def decodeUppercase(string: String): Seq[Byte] =
     fromBase(
-      string.flatMap(c => UppercaseAlphabet.find { case (v, c2) => c == c2 }.map(_._1)).toList,
+      string.flatMap(UppercaseAlphabet.reverse).toList,
       4
     )
 
   def decodeLowercase(string: String): Seq[Byte] =
     fromBase(
-      string.flatMap(c => LowercaseAlphabet.find { case (v, c2) => c == c2 }.map(_._1)).toList,
+      string.flatMap(LowercaseAlphabet.reverse).toList,
       4
     )
 end Base16
