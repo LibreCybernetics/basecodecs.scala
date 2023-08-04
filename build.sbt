@@ -18,6 +18,18 @@ ThisBuild / versionScheme     := Some("semver-spec")
 ThisBuild / scalaVersion      := Version.scala
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
+ThisBuild / resolvers := Seq(
+  Resolver.mavenLocal,
+  "Jitpack" at "https://jitpack.io",
+  "GitHub Package Registry" at "https://maven.pkg.github.com/LibreCybernetics/rfc4648.scala",
+)
+Global / credentials += Credentials(
+  "Github Package Registry",
+  "maven.pkg.github.com",
+  "LibreCybernetics",
+  sys.env.getOrElse("GITHUB_TOKEN", "")
+)
+
 val sharedSettings = Seq(
   scalaVersion := Version.scala,
   scalacOptions ++= Seq(
@@ -31,7 +43,7 @@ val sharedSettings = Seq(
     "-language:implicitConversions",
     "-Ykind-projector:underscores",
     "-Xfatal-warnings"
-  )
+  ),
 )
 
 wartremoverErrors ++= Warts.unsafe
@@ -57,9 +69,9 @@ val core =
     .settings(
       name := "rfc4648",
       libraryDependencies ++= Seq(
+        "dev.librecybernetics.bijection~scala" %%% "bijection-core" % Version.bijection,
         "org.scalatest"     %%% "scalatest"          % Version.scalatest          % Test,
         "org.scalatest"     %%% "scalatest-wordspec" % Version.scalatest          % Test,
         "org.scalatestplus" %%% "scalacheck-1-17"    % Version.scalatestPlusCheck % Test
       )
     )
-
