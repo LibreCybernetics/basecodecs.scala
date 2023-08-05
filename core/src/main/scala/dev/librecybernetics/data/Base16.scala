@@ -1,11 +1,11 @@
 package dev.librecybernetics.data
 
 object Base16:
-  val LowercaseAlphabet: Bijection[Byte, Char] =
-    DecimalAlphabet ++ Bijection((10 to 15).map(v => v.toByte -> (v + 87).toChar)*)
+  val LowercaseAlphabet: MapBijection[Byte, Char] =
+    DecimalAlphabet ++ MapBijection((10 to 15).map(v => v.toByte -> (v + 87).toChar)*)
 
-  val UppercaseAlphabet: Bijection[Byte, Char] =
-    DecimalAlphabet ++ Bijection((10 to 15).map(v => v.toByte -> (v + 55).toChar)*)
+  val UppercaseAlphabet: MapBijection[Byte, Char] =
+    DecimalAlphabet ++ MapBijection((10 to 15).map(v => v.toByte -> (v + 55).toChar)*)
 
   def encodeUppercase(bytes: Seq[Byte]): String =
     toBase(bytes, 4)

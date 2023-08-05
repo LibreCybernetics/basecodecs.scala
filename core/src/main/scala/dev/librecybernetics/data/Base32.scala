@@ -1,18 +1,18 @@
 package dev.librecybernetics.data
 
 object Base32:
-  val LowercaseAlphabet: Bijection[Byte, Char] =
-    Bijection((0 to 25).map(v => v.toByte -> (v + 97).toChar)*) ++
-      Bijection((26 to 31).map(v => v.toByte -> (v + 22).toChar)*)
+  val LowercaseAlphabet: MapBijection[Byte, Char] =
+    MapBijection((0 to 25).map(v => v.toByte -> (v + 97).toChar)*) ++
+      MapBijection((26 to 31).map(v => v.toByte -> (v + 22).toChar)*)
 
-  val UppercaseAlphabet: Bijection[Byte, Char] =
-    Bijection((0 to 25).map(v => v.toByte -> (v + 65).toChar)*) ++
-      Bijection((26 to 31).map(v => v.toByte -> (v + 22).toChar)*)
+  val UppercaseAlphabet: MapBijection[Byte, Char] =
+    MapBijection((0 to 25).map(v => v.toByte -> (v + 65).toChar)*) ++
+      MapBijection((26 to 31).map(v => v.toByte -> (v + 22).toChar)*)
 
-  val HexLowercaseAlphabet: Bijection[Byte, Char] =
-    DecimalAlphabet ++ Bijection((10 to 31).map(v => v.toByte -> (v + 87).toChar)*)
+  val HexLowercaseAlphabet: MapBijection[Byte, Char] =
+    DecimalAlphabet ++ MapBijection((10 to 31).map(v => v.toByte -> (v + 87).toChar)*)
 
-  val HexUppercaseAlphabet: Bijection[Byte, Char] =
+  val HexUppercaseAlphabet: MapBijection[Byte, Char] =
     DecimalAlphabet ++ (10 to 31).map(v => v.toByte -> (v + 55).toChar)
 
   def encodeHexUppercase(bytes: Seq[Byte]): String =
