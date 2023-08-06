@@ -26,6 +26,6 @@ jobs:
         java-version: ${{ matrix.java }}
         cache: sbt
     - name: Compile rfc4648
-      run: sbt -v "rfc4648JVM/compile"
+      run: sbt -v "coreJVM/compile"
     - name: Test rfc4648
-      run: sbt -v "rfc4648JVM/test" "rfc4648JS/test" "rfc4648Native/test"
+      run: sbt -v "coreJVM/test" "coreJS/test" "coreNative/test"
