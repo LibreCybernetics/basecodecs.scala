@@ -1,16 +1,30 @@
 package dev.librecybernetics.data
 
 object Base16:
-  private val Right(lowercaseAlphabetAlpha): Either[Bijection.Error, MapBijection[Byte, Char]] =
-    MapBijection((10 to 15).map(v => v.toByte -> (v + 87).toChar)*): @unchecked
+  private val lowercaseAlphabetAlpha: PFnBijection[Byte, Char] =
+    Bijection(
+      {
+        case i if i >= 10 && i <= 15 => (i + 87).toChar
+      }: PartialFunction[Byte, Char],
+      {
+        case c if c >= 'a' && c <= 'f' => (c - 87).toByte
+      }: PartialFunction[Char, Byte]
+    )
 
-  val Right(lowercaseAlphabet): Either[Bijection.Error, MapBijection[Byte, Char]] =
+  val Right(lowercaseAlphabet): Either[Bijection.Error, PFnBijection[Byte, Char]] =
     decimalAlphabet ++ lowercaseAlphabetAlpha: @unchecked
 
-  private val Right(uppercaseAlphabetAlpha): Either[Bijection.Error, MapBijection[Byte, Char]] =
-    MapBijection((10 to 15).map(v => v.toByte -> (v + 55).toChar)*): @unchecked
+  private val uppercaseAlphabetAlpha: PFnBijection[Byte, Char] =
+    Bijection(
+      {
+        case i if i >= 10 && i <= 15 => (i + 55).toChar
+      }: PartialFunction[Byte, Char],
+      {
+        case c if c >= 'A' && c <= 'F' => (c - 55).toByte
+      }: PartialFunction[Char, Byte]
+    )
 
-  val Right(uppercaseAlphabet): Either[Bijection.Error, MapBijection[Byte, Char]] =
+  val Right(uppercaseAlphabet): Either[Bijection.Error, PFnBijection[Byte, Char]] =
     decimalAlphabet ++ uppercaseAlphabetAlpha: @unchecked
 
   def encodeUppercase(bytes: Seq[Byte]): String =
