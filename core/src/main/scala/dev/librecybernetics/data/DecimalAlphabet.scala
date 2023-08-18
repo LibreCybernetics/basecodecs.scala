@@ -1,4 +1,11 @@
 package dev.librecybernetics.data
 
-val Right(decimalAlphabet): Either[Bijection.Error, MapBijection[Byte, Char]] =
-  MapBijection((0 to 9).map(v => v.toByte -> (v + 48).toChar)*): @unchecked
+val decimalAlphabet: PFnBijection[Byte, Char] =
+  Bijection(
+    {
+      case i if i >= 0 && i <= 9 => (i + 48).toChar
+    }: PartialFunction[Byte, Char],
+    {
+      case c if c >= 48 && c <= 57 => (c - 48).toByte
+    }: PartialFunction[Char, Byte]
+  )

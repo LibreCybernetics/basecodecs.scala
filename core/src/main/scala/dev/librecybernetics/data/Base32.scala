@@ -1,26 +1,31 @@
 package dev.librecybernetics.data
 
 object Base32:
-//  val LowercaseAlphabet: MapBijection[Byte, Char] =
-//    MapBijection((0 to 25).map(v => v.toByte -> (v + 97).toChar)*) ++
-//      MapBijection((26 to 31).map(v => v.toByte -> (v + 22).toChar)*)
-//
-//  val UppercaseAlphabet: MapBijection[Byte, Char] =
-//    MapBijection((0 to 25).map(v => v.toByte -> (v + 65).toChar)*) ++
-//      MapBijection((26 to 31).map(v => v.toByte -> (v + 22).toChar)*)
+  private val hexLowercaseAlphabetAlpha: PFnBijection[Byte, Char] =
+    Bijection(
+      {
+        case i if i >= 10 && i <= 31 => (i + 87).toChar
+      }: PartialFunction[Byte, Char],
+      {
+        case c if c >= 'a' && c <= 'v' => (c - 87).toByte
+      }: PartialFunction[Char, Byte]
+    )
 
-  private val Right(hexLowercaseAlphabetAlpha): Either[Bijection.Error, MapBijection[Byte, Char]] =
-    MapBijection((10 to 31).map(v => v.toByte -> (v + 87).toChar)*): @unchecked
-
-  val Right(hexLowercaseAlphabet): Either[Bijection.Error, MapBijection[Byte, Char]] =
+  val Right(hexLowercaseAlphabet): Either[Bijection.Error, PFnBijection[Byte, Char]] =
     decimalAlphabet ++ hexLowercaseAlphabetAlpha: @unchecked
 
-  private val Right(hexUppercaseAlphabetAlpha): Either[Bijection.Error, MapBijection[Byte, Char]] =
-    MapBijection((10 to 31).map(v => v.toByte -> (v + 55).toChar)*): @unchecked
+  private val hexUppercaseAlphabetAlpha: PFnBijection[Byte, Char] =
+    Bijection(
+      {
+        case i if i >= 10 && i <= 31 => (i + 55).toChar
+      }: PartialFunction[Byte, Char],
+      {
+        case c if c >= 'A' && c <= 'V' => (c - 55).toByte
+      }: PartialFunction[Char, Byte]
+    )
 
-  val Right(hexUppercaseAlphabet): Either[Bijection.Error, MapBijection[Byte, Char]] =
+  val Right(hexUppercaseAlphabet): Either[Bijection.Error, PFnBijection[Byte, Char]] =
     decimalAlphabet ++ hexUppercaseAlphabetAlpha: @unchecked
-
 
   def encodeHexUppercase(bytes: Seq[Byte]): String =
     toBase(bytes, 4)
