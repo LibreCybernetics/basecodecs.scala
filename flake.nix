@@ -14,13 +14,9 @@
         };
         jdk = pkgs.jdk11;
       in rec {
-        config = {
-          env = [{
-            name = "JAVA_HOME";
-            value = "${jdk.home}";
-          }];
-          
-          packages = with pkgs;[
+        config = rec {
+          packages = with pkgs; [
+            async-profiler
             dbmate
             jdk
             llvmPackages_15.clang
@@ -29,6 +25,15 @@
               jre = jdk;
             })
           ];
+
+          env = [{
+            name = "JAVA_HOME";
+            value = "${jdk.home}";
+          }
+          {
+            name = "LD_LIBRARY_PATH";
+            value = nixpkgs.lib.makeLibraryPath config.packages;
+          }];
         };
 
         devShell = pkgs.devshell.mkShell {
