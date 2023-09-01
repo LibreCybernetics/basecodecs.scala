@@ -81,11 +81,11 @@ val root: CrossProject =
     .enablePlugins(ScalaUnidocPlugin)
     .settings(sharedSettings)
     .settings(
-      name                                       := "bijection",
+      name                                       := "rfc4648",
       ScalaUnidoc / unidoc / unidocProjectFilter := inProjects(thisProject.value.aggregate*)
     )
 
-// To avoid publishing the default root package / `bijection-scala`
+// To avoid publishing the default root package / `rfc4648-scala`
 
 val fakeRoot = (project in file("."))
   .settings(
