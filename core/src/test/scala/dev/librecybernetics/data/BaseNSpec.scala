@@ -7,10 +7,10 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 class BaseNSpec extends AnyWordSpec:
   def genericExample(
-    input: String,
-    expected: String,
-    encode: String => String,
-    decode: String => Array[Byte]
+      input: String,
+      expected: String,
+      encode: String => String,
+      decode: String => Array[Byte]
   ): Unit =
     val encoded = encode(input)
     val decoded = decode(expected)
@@ -71,5 +71,31 @@ class BaseNSpec extends AnyWordSpec:
     example("foob", "CPNMUOG")
     example("fooba", "CPNMUOJ1")
     example("foobar", "CPNMUOJ1E8")
+  }
+
+  "Base32Lowercase" when {
+    def example(input: String, expected: String): Unit =
+      genericExample(input, expected, Base32Lowercase.encode, Base32Lowercase.decode)
+
+    example("", "")
+    example("f", "my")
+    example("fo", "mzxq")
+    example("foo", "mzxw6")
+    example("foob", "mzxw6yq")
+    example("fooba", "mzxw6ytb")
+    example("foobar", "mzxw6ytboi")
+  }
+
+  "Base32Uppercase" when {
+    def example(input: String, expected: String): Unit =
+      genericExample(input, expected, Base32Uppercase.encode, Base32Uppercase.decode)
+
+    example("", "")
+    example("f", "MY")
+    example("fo", "MZXQ")
+    example("foo", "MZXW6")
+    example("foob", "MZXW6YQ")
+    example("fooba", "MZXW6YTB")
+    example("foobar", "MZXW6YTBOI")
   }
 end BaseNSpec

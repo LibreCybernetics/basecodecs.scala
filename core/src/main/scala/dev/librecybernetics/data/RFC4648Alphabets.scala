@@ -6,6 +6,9 @@ object RFC4648Alphabets:
   private val decimalAlphabet: PFnBijection[Byte, Char] =
     GenericAlphabet(0, 9, '0', '9', 48)
 
+  private val base32DecimalAlphabet: PFnBijection[Byte, Char] =
+    GenericAlphabet(26, 31, '2', '7', 24)
+
   // Base16
 
   val Right(base16Lowercase): Either[Bijection.Error, PFnBijection[Byte, Char]] =
@@ -21,4 +24,10 @@ object RFC4648Alphabets:
 
   val Right(base32HexUppercase): Either[Bijection.Error, PFnBijection[Byte, Char]] =
     decimalAlphabet ++ GenericAlphabet(10, 31, 'A', 'V', 55): @unchecked
+
+  val Right(base32Lowercase): Either[Bijection.Error, PFnBijection[Byte, Char]] =
+    GenericAlphabet(0, 25, 'a', 'z', 97) ++ base32DecimalAlphabet : @unchecked
+
+  val Right(base32Uppercase): Either[Bijection.Error, PFnBijection[Byte, Char]] =
+    GenericAlphabet(0, 25, 'A', 'Z', 65) ++ base32DecimalAlphabet : @unchecked
 end RFC4648Alphabets
