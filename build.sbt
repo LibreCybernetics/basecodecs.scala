@@ -55,7 +55,7 @@ val sharedSettings = Seq(
   )
 )
 
-wartremoverErrors ++= Warts.unsafe
+ThisBuild / wartremoverErrors ++= Warts.unsafe
 
 val core =
   crossProject(JVMPlatform, NativePlatform, JSPlatform)

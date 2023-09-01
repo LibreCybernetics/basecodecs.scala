@@ -1,11 +1,13 @@
 package dev.librecybernetics.data
 
 import scala.annotation.tailrec
+import scala.collection.immutable.ArraySeq
+import scala.util.NotGiven
 
 private[librecybernetics] type BasePower = 4 | 5 | 6
 
 private[librecybernetics] def byte2Short(byte: Byte) =
-  if(byte < 0) (byte + 256).toShort else byte.toShort
+  if (byte < 0) (byte + 256).toShort else byte.toShort
 
 private[librecybernetics] def mask(basePower: Int): Byte = ((1 << basePower) - 1).toByte
 
@@ -17,18 +19,18 @@ private[librecybernetics] def toBasePartialByte(
 ): Byte =
   val currentBits: Byte =
     ((currentByte & mask(remainingBits)) << (basePower - remainingBits)).toByte
-  val nextBits: Byte =
+  val nextBits: Byte    =
     (byte2Short(nextByte) >> (8 - basePower + remainingBits)).toByte
 
   (currentBits | nextBits).toByte
 end toBasePartialByte
 
 @tailrec
-private[librecybernetics] def toBasePartial(
-    input: Seq[Byte],
+private[librecybernetics] def toBasePartial[S <: Seq[Byte]](
+    input: S,
     remainingBits: Int,
     basePower: BasePower,
-    result: Seq[Byte]
+    result: S
 ): Seq[Byte] =
   input match
     case Nil =>
@@ -46,17 +48,25 @@ private[librecybernetics] def toBasePartial(
       toBasePartial(xs, 8 - (basePower - remainingBits), basePower, result :+ bits)
   end match
 
-def toBase(input: Seq[Byte], basePower: BasePower): Seq[Byte] =
-  require(!input.isInstanceOf[collection.immutable.ArraySeq[Byte]])
+def toBase[S <: Seq[Byte]](
+    input: S,
+    basePower: BasePower
+)(using
+    NotGiven[S =:= ArraySeq[Byte]]
+): Seq[Byte] =
   toBasePartial(input, 8, basePower, Nil)
 
 @tailrec
-private[librecybernetics] def fromBasePartial(
-    input: Seq[Byte],
+private[librecybernetics] def fromBasePartial[S <: Seq[Byte]](
+    input: S,
     missingBits: Int,
     basePower: BasePower,
-    result: Seq[Byte]
+    result: S
+)(using
+    NotGiven[S =:= ArraySeq[Byte]]
 ): Seq[Byte] =
+  val r: Byte = result.lastOption.getOrElse(0)
+
   input match
     case Nil => result
 
@@ -65,22 +75,26 @@ private[librecybernetics] def fromBasePartial(
 
     case x :: xs if missingBits >= basePower =>
       val bits     = (x << (missingBits - basePower)).toByte
-      val r: Byte  = result.last
       val mutatedR = (r | bits).toByte
-      fromBasePartial(xs, missingBits - basePower, basePower, result.init :+ mutatedR)
+      fromBasePartial(xs, missingBits - basePower, basePower, result.dropRight(1) :+ mutatedR)
 
     case x :: Nil if missingBits < basePower =>
       val bitsC    = (byte2Short(x) >> (basePower - missingBits)).toByte
-      val mutatedR = (result.last | bitsC).toByte
-      result.init :+ mutatedR
+      val mutatedR = (r | bitsC).toByte
+      result.dropRight(1) :+ mutatedR
 
     case x :: xs if missingBits < basePower =>
       val bitsC    = (byte2Short(x) >> (basePower - missingBits)).toByte
       val bitsN    = ((x & mask(basePower - missingBits)) << (8 - (basePower - missingBits))).toByte
-      val mutatedR = (result.last | bitsC).toByte
-      fromBasePartial(xs, 8 - (basePower - missingBits), basePower, result.init :+ mutatedR :+ bitsN)
+      val mutatedR = (r | bitsC).toByte
+      fromBasePartial(xs, 8 - (basePower - missingBits), basePower, result.dropRight(1) :+ mutatedR :+ bitsN)
   end match
+end fromBasePartial
 
-def fromBase(input: Seq[Byte], basePower: BasePower): Seq[Byte] =
-  require(!input.isInstanceOf[collection.immutable.ArraySeq[Byte]])
+def fromBase[S <: Seq[Byte]](
+    input: S,
+    basePower: BasePower
+)(using
+    NotGiven[S =:= ArraySeq[Byte]]
+): Seq[Byte] =
   fromBasePartial(input, 0, basePower, Nil)
