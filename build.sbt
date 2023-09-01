@@ -63,7 +63,7 @@ val core =
     .in(file("core"))
     .settings(sharedSettings)
     .settings(
-      name := "rfc4648",
+      name := "rfc4648-core",
       libraryDependencies ++= Seq(
         "dev.librecybernetics.bijection~scala" %%% "bijection-core"     % Version.bijection,
         "org.scalatest"                        %%% "scalatest"          % Version.scalatest          % Test,
