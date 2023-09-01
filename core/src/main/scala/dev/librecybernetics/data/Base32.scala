@@ -28,7 +28,7 @@ object Base32:
     decimalAlphabet ++ hexUppercaseAlphabetAlpha: @unchecked
 
   def encodeHexUppercase(bytes: Seq[Byte]): String =
-    toBase(bytes, 4)
+    toBase(bytes, 5)
       .flatMap(hexUppercaseAlphabet.apply)
       .mkString
 
@@ -36,7 +36,7 @@ object Base32:
     encodeHexUppercase(string.getBytes.toList)
 
   def encodeHexLowercase(bytes: Seq[Byte]): String =
-    toBase(bytes, 4)
+    toBase(bytes, 5)
       .flatMap(hexLowercaseAlphabet.apply)
       .mkString
 
@@ -45,13 +45,13 @@ object Base32:
 
   def decodeHexUppercase(string: String): Seq[Byte] =
     fromBase(
-      string.flatMap(hexUppercaseAlphabet.reverse),
-      4
+      string.flatMap(hexUppercaseAlphabet.reverse).toList,
+      5
     )
 
   def decodeHexLowercase(string: String): Seq[Byte] =
     fromBase(
-      string.flatMap(hexLowercaseAlphabet.reverse),
-      4
+      string.flatMap(hexLowercaseAlphabet.reverse).toList,
+      5
     )
 end Base32

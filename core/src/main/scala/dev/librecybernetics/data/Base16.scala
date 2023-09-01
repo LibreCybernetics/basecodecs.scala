@@ -32,7 +32,6 @@ object Base16:
       .flatMap(uppercaseAlphabet.apply)
       .mkString
 
-  println(uppercaseAlphabet)
   def encodeUppercase(string: String): String =
     encodeUppercase(string.getBytes.toList)
 
