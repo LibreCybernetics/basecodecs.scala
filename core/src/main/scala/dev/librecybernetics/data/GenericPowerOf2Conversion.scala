@@ -31,6 +31,9 @@ private[librecybernetics] def toBasePartial[S <: Seq[Byte]](
     remainingBits: Int,
     basePower: BasePower,
     result: S
+)(using
+    NotGiven[S <:< ArraySeq[Byte]],
+    NotGiven[S <:< Vector[Byte]]
 ): Seq[Byte] =
   input match
     case Nil =>
@@ -52,7 +55,8 @@ def toBase[S <: Seq[Byte]](
     input: S,
     basePower: BasePower
 )(using
-    NotGiven[S =:= ArraySeq[Byte]]
+    NotGiven[S <:< ArraySeq[Byte]],
+    NotGiven[S <:< Vector[Byte]]
 ): Seq[Byte] =
   toBasePartial(input, 8, basePower, Nil)
 
@@ -63,7 +67,8 @@ private[librecybernetics] def fromBasePartial[S <: Seq[Byte]](
     basePower: BasePower,
     result: S
 )(using
-    NotGiven[S =:= ArraySeq[Byte]]
+    NotGiven[S <:< ArraySeq[Byte]],
+    NotGiven[S <:< Vector[Byte]]
 ): Seq[Byte] =
   val r: Byte = result.lastOption.getOrElse(0)
 
@@ -95,6 +100,7 @@ def fromBase[S <: Seq[Byte]](
     input: S,
     basePower: BasePower
 )(using
-    NotGiven[S =:= ArraySeq[Byte]]
+    NotGiven[S <:< ArraySeq[Byte]],
+    NotGiven[S <:< Vector[Byte]]
 ): Seq[Byte] =
   fromBasePartial(input, 0, basePower, Nil)

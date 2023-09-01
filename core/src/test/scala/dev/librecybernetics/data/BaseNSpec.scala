@@ -10,20 +10,20 @@ class BaseNSpec extends AnyWordSpec:
     input: String,
     expected: String,
     encode: String => String,
-    decode: String => Seq[Byte]
+    decode: String => Array[Byte]
   ): Unit =
     val encoded = encode(input)
     val decoded = decode(expected)
 
     input in {
       encoded shouldBe expected
-      decoded shouldBe input.getBytes.toSeq
+      decoded shouldBe input.getBytes
     }
   end genericExample
 
   "Base16Lowercase" when {
     def example(input: String, expected: String): Unit =
-      genericExample(input, expected, Base16.encodeLowercase, Base16.decodeLowercase)
+      genericExample(input, expected, Base16Lowercase.encode, Base16Lowercase.decode)
 
     example("", "")
     example("f", "66")
@@ -36,7 +36,7 @@ class BaseNSpec extends AnyWordSpec:
 
   "Base16Uppercase" when {
     def example(input: String, expected: String): Unit =
-      genericExample(input, expected, Base16.encodeUppercase, Base16.decodeUppercase)
+      genericExample(input, expected, Base16Uppercase.encode, Base16Uppercase.decode)
 
     example("", "")
     example("f", "66")
@@ -49,7 +49,7 @@ class BaseNSpec extends AnyWordSpec:
 
   "Base32HexLowercase" when {
     def example(input: String, expected: String): Unit =
-      genericExample(input, expected, Base32.encodeHexLowercase, Base32.decodeHexLowercase)
+      genericExample(input, expected, Base32HexLowercase.encode, Base32HexLowercase.decode)
 
     example("", "")
     example("f", "co")
@@ -62,7 +62,7 @@ class BaseNSpec extends AnyWordSpec:
 
   "Base32HexUppercase" when {
     def example(input: String, expected: String): Unit =
-      genericExample(input, expected, Base32.encodeHexUppercase, Base32.decodeHexUppercase)
+      genericExample(input, expected, Base32HexUppercase.encode, Base32HexUppercase.decode)
 
     example("", "")
     example("f", "CO")
