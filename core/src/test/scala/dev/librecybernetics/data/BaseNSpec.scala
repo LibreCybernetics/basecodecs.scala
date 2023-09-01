@@ -13,7 +13,7 @@ class BaseNSpec extends AnyWordSpec:
     decode: String => Seq[Byte]
   ): Unit =
     val encoded = encode(input)
-    val decoded = decode(expected.toLowerCase)
+    val decoded = decode(expected)
 
     input in {
       encoded shouldBe expected
@@ -34,7 +34,7 @@ class BaseNSpec extends AnyWordSpec:
     example("foobar", "666f6f626172")
   }
 
-  "Base16Uppercase" ignore {
+  "Base16Uppercase" when {
     def example(input: String, expected: String): Unit =
       genericExample(input, expected, Base16.encodeUppercase, Base16.decodeUppercase)
 
@@ -60,7 +60,7 @@ class BaseNSpec extends AnyWordSpec:
     example("foobar", "cpnmuoj1e8")
   }
 
-  "Base32HexUppercase" ignore {
+  "Base32HexUppercase" when {
     def example(input: String, expected: String): Unit =
       genericExample(input, expected, Base32.encodeHexUppercase, Base32.decodeHexUppercase)
 
@@ -69,7 +69,7 @@ class BaseNSpec extends AnyWordSpec:
     example("fo", "CPNG")
     example("foo", "CPNMU")
     example("foob", "CPNMUOG")
-    example("fooba", "CPUNMUOJ1")
+    example("fooba", "CPNMUOJ1")
     example("foobar", "CPNMUOJ1E8")
   }
 end BaseNSpec
