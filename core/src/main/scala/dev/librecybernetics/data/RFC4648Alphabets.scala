@@ -1,6 +1,6 @@
 package dev.librecybernetics.data
 
-object RFC4648Alphabet:
+object RFC4648Alphabets:
   // Decimal
 
   private val decimalAlphabet: PFnBijection[Byte, Char] =
@@ -21,4 +21,4 @@ object RFC4648Alphabet:
 
   val Right(base32HexUppercase): Either[Bijection.Error, PFnBijection[Byte, Char]] =
     decimalAlphabet ++ GenericAlphabet(10, 31, 'A', 'V', 55): @unchecked
-end RFC4648Alphabet
+end RFC4648Alphabets
