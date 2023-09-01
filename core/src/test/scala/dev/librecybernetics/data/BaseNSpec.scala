@@ -98,4 +98,30 @@ class BaseNSpec extends AnyWordSpec:
     example("fooba", "MZXW6YTB")
     example("foobar", "MZXW6YTBOI")
   }
+
+  "Base64" when {
+    def example(input: String, expected: String): Unit =
+      genericExample(input, expected, Base64.encode, Base64.decode)
+
+    example("", "")
+    example("f", "Zg")
+    example("fo", "Zm8")
+    example("foo", "Zm9v")
+    example("foob", "Zm9vYg")
+    example("fooba", "Zm9vYmE")
+    example("foobar", "Zm9vYmFy")
+  }
+
+  "Base64URLSafe" when {
+    def example(input: String, expected: String): Unit =
+      genericExample(input, expected, Base64URLSafe.encode, Base64URLSafe.decode)
+
+    example("", "")
+    example("f", "Zg")
+    example("fo", "Zm8")
+    example("foo", "Zm9v")
+    example("foob", "Zm9vYg")
+    example("fooba", "Zm9vYmE")
+    example("foobar", "Zm9vYmFy")
+  }
 end BaseNSpec
