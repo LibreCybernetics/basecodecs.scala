@@ -72,6 +72,17 @@ val core =
       )
     )
 
+val `core-bench` =
+  crossProject(JVMPlatform)
+    .crossType(CrossType.Pure)
+    .in(file("core/bench"))
+    .dependsOn(core)
+    .settings(sharedSettings)
+    .settings(
+      githubWorkflowArtifactUpload := false
+    )
+    .enablePlugins(JmhPlugin)
+
 val root: CrossProject =
   crossProject(JVMPlatform, NativePlatform, JSPlatform)
     .crossType(CrossType.Pure)
