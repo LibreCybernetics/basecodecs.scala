@@ -26,81 +26,77 @@ private[librecybernetics] def toBasePartialByte(
 end toBasePartialByte
 
 @tailrec
-private[librecybernetics] def toBasePartial[S <: Seq[Byte]](
-    input: S,
+private[librecybernetics] def toBasePartial(
+    input: Array[Byte],
     remainingBits: Int,
     basePower: BasePower,
-    result: S
-)(using
-    NotGiven[S <:< ArraySeq[Byte]],
-    NotGiven[S <:< Vector[Byte]]
-): Seq[Byte] =
-  input match
-    case Nil =>
-      result
+    result: Array[Byte]
+): Array[Byte] =
+  input.headOption match
+    case None => result
 
-    case input @ x :: xs if remainingBits > basePower =>
-      val bits = byte2Short(x) >> (remainingBits - basePower)
-      toBasePartial(input, remainingBits - basePower, basePower, result :+ (bits & mask(basePower)).toByte)
+    case Some(x) =>
+      val xs = input.tail
 
-    case x :: xs if remainingBits == basePower =>
-      toBasePartial(xs, 8, basePower, result :+ (x & mask(basePower)).toByte)
+      remainingBits compare basePower match
+        case 1 => // GT
+          val bits = byte2Short(x) >> (remainingBits - basePower)
+          toBasePartial(input, remainingBits - basePower, basePower, result :+ (bits & mask(basePower)).toByte)
 
-    case x :: xs if remainingBits < basePower =>
-      val bits = toBasePartialByte(x, xs.headOption.getOrElse(0), remainingBits, basePower)
-      toBasePartial(xs, 8 - (basePower - remainingBits), basePower, result :+ bits)
+        case 0 => // EQ
+          toBasePartial(xs, 8, basePower, result :+ (x & mask(basePower)).toByte)
+
+        case -1 => // LT
+          val bits = toBasePartialByte(x, xs.headOption.getOrElse(0), remainingBits, basePower)
+          toBasePartial(xs, 8 - (basePower - remainingBits), basePower, result :+ bits)
   end match
+end toBasePartial
 
-def toBase[S <: Seq[Byte]](
-    input: S,
+def toBase[S <: Array[Byte]](
+    input: Array[Byte],
     basePower: BasePower
-)(using
-    NotGiven[S <:< ArraySeq[Byte]],
-    NotGiven[S <:< Vector[Byte]]
-): Seq[Byte] =
-  toBasePartial(input, 8, basePower, Nil)
+): Array[Byte] =
+  toBasePartial(input, 8, basePower, Array.emptyByteArray)
 
 @tailrec
-private[librecybernetics] def fromBasePartial[S <: Seq[Byte]](
-    input: S,
+private[librecybernetics] def fromBasePartial(
+    input: Array[Byte],
     missingBits: Int,
     basePower: BasePower,
-    result: S
-)(using
-    NotGiven[S <:< ArraySeq[Byte]],
-    NotGiven[S <:< Vector[Byte]]
-): Seq[Byte] =
+    result: Array[Byte]
+): Array[Byte] =
   val r: Byte = result.lastOption.getOrElse(0)
 
-  input match
-    case Nil => result
+  input.headOption match
+    case None => result
 
-    case input @ _ :: _ if missingBits == 0 =>
-      fromBasePartial(input, 8, basePower, result :+ 0.toByte)
+    case Some(x) =>
+      val xs = input.tail
 
-    case x :: xs if missingBits >= basePower =>
-      val bits     = (x << (missingBits - basePower)).toByte
-      val mutatedR = (r | bits).toByte
-      fromBasePartial(xs, missingBits - basePower, basePower, result.dropRight(1) :+ mutatedR)
+      if (missingBits == 0) fromBasePartial(input, 8, basePower, result :+ 0.toByte)
+      else
+        missingBits compare basePower match
+          case 0 | 1 =>
+            val bits     = (x << (missingBits - basePower)).toByte
+            val mutatedR = (r | bits).toByte
+            fromBasePartial(xs, missingBits - basePower, basePower, result.dropRight(1) :+ mutatedR)
 
-    case x :: Nil if missingBits < basePower =>
-      val bitsC    = (byte2Short(x) >> (basePower - missingBits)).toByte
-      val mutatedR = (r | bitsC).toByte
-      result.dropRight(1) :+ mutatedR
+          case -1 if xs.isEmpty =>
+            val bitsC    = (byte2Short(x) >> (basePower - missingBits)).toByte
+            val mutatedR = (r | bitsC).toByte
+            result.dropRight(1) :+ mutatedR
 
-    case x :: xs if missingBits < basePower =>
-      val bitsC    = (byte2Short(x) >> (basePower - missingBits)).toByte
-      val bitsN    = ((x & mask(basePower - missingBits)) << (8 - (basePower - missingBits))).toByte
-      val mutatedR = (r | bitsC).toByte
-      fromBasePartial(xs, 8 - (basePower - missingBits), basePower, result.dropRight(1) :+ mutatedR :+ bitsN)
+          case -1 =>
+            val bitsC    = (byte2Short(x) >> (basePower - missingBits)).toByte
+            val bitsN    = ((x & mask(basePower - missingBits)) << (8 - (basePower - missingBits))).toByte
+            val mutatedR = (r | bitsC).toByte
+            fromBasePartial(xs, 8 - (basePower - missingBits), basePower, result.dropRight(1) :+ mutatedR :+ bitsN)
+        end match
   end match
 end fromBasePartial
 
-def fromBase[S <: Seq[Byte]](
-    input: S,
+def fromBase[S <: Array[Byte]](
+    input: Array[Byte],
     basePower: BasePower
-)(using
-    NotGiven[S <:< ArraySeq[Byte]],
-    NotGiven[S <:< Vector[Byte]]
-): Seq[Byte] =
-  fromBasePartial(input, 0, basePower, Nil)
+): Array[Byte] =
+  fromBasePartial(input, 0, basePower, Array.emptyByteArray)

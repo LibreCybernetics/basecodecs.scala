@@ -10,7 +10,7 @@ case class GenericCodec(
     padding: Char
 ):
   def encode(bytes: Array[Byte]): String =
-    toBase(bytes.toList, basePower)
+    toBase(bytes, basePower)
       .flatMap(alphabet.apply)
       .mkString
 
@@ -22,9 +22,9 @@ case class GenericCodec(
 
   def decode(string: String): Array[Byte] =
     fromBase(
-      string.takeWhile(_ != padding).flatMap(alphabet.reverse).toList,
+      string.takeWhile(_ != padding).flatMap(alphabet.reverse).toArray,
       basePower
-    ).toArray
+    )
 
   def decode(string: String, charset: Charset): String =
     String(decode(string), charset)
