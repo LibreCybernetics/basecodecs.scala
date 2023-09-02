@@ -8,13 +8,13 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.*
 
 class GenericBase2ConversionSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
-  def genericExample(input: String, expected: Map[BasePower, Seq[Byte]]): Assertion =
-    genericExample(input.getBytes.toList, expected)
+  def genericExample(input: String, expected: Map[BasePower, Array[Byte]]): Assertion =
+    genericExample(input.getBytes, expected)
 
-  def genericExample(input: Seq[Byte], expected: Map[BasePower, Seq[Byte]]): Assertion =
-    forAll(Table("basePower" -> "encodedValues", expected.toSeq*)) { (base: BasePower, expected: Seq[Byte]) =>
+  def genericExample(input: Array[Byte], expected: Map[BasePower, Array[Byte]]): Assertion =
+    forAll(Table("basePower" -> "encodedValues", expected.toSeq*)) { (base: BasePower, expected: Array[Byte]) =>
       val encoded = toBase(input, base)
-      val decoded = fromBase(expected.toList, base)
+      val decoded = fromBase(expected, base)
 
       decoded shouldBe input
       encoded shouldBe expected
@@ -27,13 +27,13 @@ class GenericBase2ConversionSpec extends AnyWordSpec with ScalaCheckPropertyChec
     *
     * TODO: Move to utils
     */
-  def randomByteArray(maxValue: Int): Gen[Seq[Byte]] = for
+  def randomByteArray(maxValue: Int): Gen[Array[Byte]] = for
     length <- Gen.choose(0, 100)
-    input  <- Gen.listOfN(length, Gen.choose(0, maxValue).map(_.toByte))
+    input  <- Gen.listOfN(length, Gen.choose(0, maxValue).map(_.toByte)).map(_.toArray)
   yield input
 
   def fromTo(basePower: BasePower): Assertion =
-    forAll(randomByteArray(255)) { (input: Seq[Byte]) =>
+    forAll(randomByteArray(255)) { (input: Array[Byte]) =>
       val converted = toBase(input, basePower)
       val back      = fromBase(converted, basePower)
       input shouldBe back
@@ -49,58 +49,58 @@ class GenericBase2ConversionSpec extends AnyWordSpec with ScalaCheckPropertyChec
   "spec test vector" when {
     "empty" in genericExample(
       "",
-      Map[BasePower, Seq[Byte]](
-        4 -> Nil,
-        5 -> Nil,
-        6 -> Nil
+      Map[BasePower, Array[Byte]](
+        4 -> Array.emptyByteArray,
+        5 -> Array.emptyByteArray,
+        6 -> Array.emptyByteArray
       )
     )
     "f" in genericExample(
       "f",
-      Map[BasePower, Seq[Byte]](
-        4 -> Seq(6, 6),
-        5 -> Seq(12, 24),
-        6 -> Seq(25, 32)
+      Map[BasePower, Array[Byte]](
+        4 -> Array(6, 6),
+        5 -> Array(12, 24),
+        6 -> Array(25, 32)
       )
     )
     "fo" in genericExample(
       "fo",
-      Map[BasePower, Seq[Byte]](
-        4 -> Seq(6, 6, 6, 15),
-        5 -> Seq(12, 25, 23, 16),
-        6 -> Seq(25, 38, 60)
+      Map[BasePower, Array[Byte]](
+        4 -> Array(6, 6, 6, 15),
+        5 -> Array(12, 25, 23, 16),
+        6 -> Array(25, 38, 60)
       )
     )
     "foo" in genericExample(
       "foo",
-      Map[BasePower, Seq[Byte]](
-        4 -> Seq(6, 6, 6, 15, 6, 15),
-        5 -> Seq(12, 25, 23, 22, 30),
-        6 -> Seq(25, 38, 61, 47)
+      Map[BasePower, Array[Byte]](
+        4 -> Array(6, 6, 6, 15, 6, 15),
+        5 -> Array(12, 25, 23, 22, 30),
+        6 -> Array(25, 38, 61, 47)
       )
     )
     "foob" in genericExample(
       "foob",
-      Map[BasePower, Seq[Byte]](
-        4 -> Seq(6, 6, 6, 15, 6, 15, 6, 2),
-        5 -> Seq(12, 25, 23, 22, 30, 24, 16),
-        6 -> Seq(25, 38, 61, 47, 24, 32)
+      Map[BasePower, Array[Byte]](
+        4 -> Array(6, 6, 6, 15, 6, 15, 6, 2),
+        5 -> Array(12, 25, 23, 22, 30, 24, 16),
+        6 -> Array(25, 38, 61, 47, 24, 32)
       )
     )
     "fooba" in genericExample(
       "fooba",
-      Map[BasePower, Seq[Byte]](
-        4 -> Seq(6, 6, 6, 15, 6, 15, 6, 2, 6, 1),
-        5 -> Seq(12, 25, 23, 22, 30, 24, 19, 1),
-        6 -> Seq(25, 38, 61, 47, 24, 38, 4)
+      Map[BasePower, Array[Byte]](
+        4 -> Array(6, 6, 6, 15, 6, 15, 6, 2, 6, 1),
+        5 -> Array(12, 25, 23, 22, 30, 24, 19, 1),
+        6 -> Array(25, 38, 61, 47, 24, 38, 4)
       )
     )
     "jvm complements 1" in genericExample(
-      Seq[Byte](0, -1),
-      Map[BasePower, Seq[Byte]](
-        4 -> Seq(0, 0, 15, 15),
-        5 -> Seq(0, 3, 31, 16),
-        6 -> Seq(0, 15, 60)
+      Array[Byte](0, -1),
+      Map[BasePower, Array[Byte]](
+        4 -> Array(0, 0, 15, 15),
+        5 -> Array(0, 3, 31, 16),
+        6 -> Array(0, 15, 60)
       )
     )
   }
