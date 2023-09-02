@@ -79,18 +79,23 @@ private[librecybernetics] def fromBasePartial(
           case 0 | 1 =>
             val bits     = (x << (missingBits - basePower)).toByte
             val mutatedR = (r | bits).toByte
-            fromBasePartial(xs, missingBits - basePower, basePower, result.dropRight(1) :+ mutatedR)
+            fromBasePartial(xs, missingBits - basePower, basePower, result.updated(result.length - 1, mutatedR))
 
           case -1 if xs.isEmpty =>
             val bitsC    = (byte2Short(x) >> (basePower - missingBits)).toByte
             val mutatedR = (r | bitsC).toByte
-            result.dropRight(1) :+ mutatedR
+            result.updated(result.length - 1, mutatedR)
 
           case -1 =>
             val bitsC    = (byte2Short(x) >> (basePower - missingBits)).toByte
             val bitsN    = ((x & mask(basePower - missingBits)) << (8 - (basePower - missingBits))).toByte
             val mutatedR = (r | bitsC).toByte
-            fromBasePartial(xs, 8 - (basePower - missingBits), basePower, result.dropRight(1) :+ mutatedR :+ bitsN)
+            fromBasePartial(
+              xs,
+              8 - (basePower - missingBits),
+              basePower,
+              result.updated(result.length - 1, mutatedR) :+ bitsN
+            )
         end match
   end match
 end fromBasePartial
