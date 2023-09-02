@@ -2,6 +2,7 @@ package dev.librecybernetics.data
 
 import scala.annotation.tailrec
 import scala.collection.immutable.ArraySeq
+import scala.math.max
 import scala.util.NotGiven
 
 private[librecybernetics] type BasePower = 4 | 5 | 6
@@ -28,27 +29,32 @@ end toBasePartialByte
 @tailrec
 private[librecybernetics] def toBasePartial(
     input: Array[Byte],
-    remainingBits: Int,
     basePower: BasePower,
-    result: Array[Byte]
+    result: Array[Byte],
+    offset: Int
 ): Array[Byte] =
-  input.headOption match
+  val bits          = offset * basePower
+  val inputOffset   = bits / 8
+  val remainingBits = 8 - (bits % 8)
+
+  input.unapply(inputOffset) match
     case None => result
 
     case Some(x) =>
-      val xs = input.tail
-
       remainingBits compare basePower match
-        case 1 => // GT
+        case 0 | 1 => // EQ |GT
           val bits = byte2Short(x) >> (remainingBits - basePower)
-          toBasePartial(input, remainingBits - basePower, basePower, result :+ (bits & mask(basePower)).toByte)
 
-        case 0 => // EQ
-          toBasePartial(xs, 8, basePower, result :+ (x & mask(basePower)).toByte)
+          // Mutate
+          result.update(offset, (bits.toByte & mask(basePower)).toByte)
+          toBasePartial(input, basePower, result, offset + 1)
 
         case -1 => // LT
-          val bits = toBasePartialByte(x, xs.headOption.getOrElse(0), remainingBits, basePower)
-          toBasePartial(xs, 8 - (basePower - remainingBits), basePower, result :+ bits)
+          val bits = toBasePartialByte(x, input.unapply(inputOffset + 1).getOrElse(0), remainingBits, basePower)
+
+          // Mutate
+          result.update(offset, bits)
+          toBasePartial(input, basePower, result, offset + 1)
   end match
 end toBasePartial
 
@@ -56,47 +62,58 @@ def toBase[S <: Array[Byte]](
     input: Array[Byte],
     basePower: BasePower
 ): Array[Byte] =
-  toBasePartial(input, 8, basePower, Array.emptyByteArray)
+  val bits = input.length * 8
+
+  toBasePartial(
+    input,
+    basePower,
+    Array.fill[Byte](bits / basePower + 1)(0.toByte),
+    offset = 0
+  ).dropRight(if (bits % basePower == 0) 1 else 0)
 
 @tailrec
 private[librecybernetics] def fromBasePartial(
     input: Array[Byte],
-    missingBits: Int,
     basePower: BasePower,
-    result: Array[Byte]
+    result: Array[Byte],
+    offset: Int
 ): Array[Byte] =
-  val r: Byte = result.lastOption.getOrElse(0)
-
-  input.headOption match
+  input.unapply(offset) match
     case None => result
 
     case Some(x) =>
-      val xs = input.tail
+      val bits         = offset * basePower
+      val resultOffset = bits / 8
+      val missingBits  = 8 - (bits % 8)
+      val r            = result.unapply(resultOffset).getOrElse(0.toByte)
 
-      if (missingBits == 0) fromBasePartial(input, 8, basePower, result :+ 0.toByte)
-      else
-        missingBits compare basePower match
-          case 0 | 1 =>
-            val bits     = (x << (missingBits - basePower)).toByte
-            val mutatedR = (r | bits).toByte
-            fromBasePartial(xs, missingBits - basePower, basePower, result.updated(result.length - 1, mutatedR))
+      missingBits compare basePower match
+        case 0 | 1 =>
+          val bits     = (x << (missingBits - basePower)).toByte
+          val mutatedR = (r | bits).toByte
 
-          case -1 if xs.isEmpty =>
-            val bitsC    = (byte2Short(x) >> (basePower - missingBits)).toByte
-            val mutatedR = (r | bitsC).toByte
-            result.updated(result.length - 1, mutatedR)
+          // Mutate
+          result.update(resultOffset, mutatedR)
+          fromBasePartial(input, basePower, result, offset + 1)
 
-          case -1 =>
-            val bitsC    = (byte2Short(x) >> (basePower - missingBits)).toByte
-            val bitsN    = ((x & mask(basePower - missingBits)) << (8 - (basePower - missingBits))).toByte
-            val mutatedR = (r | bitsC).toByte
-            fromBasePartial(
-              xs,
-              8 - (basePower - missingBits),
-              basePower,
-              result.updated(result.length - 1, mutatedR) :+ bitsN
-            )
-        end match
+        case -1 if offset >= input.length =>
+          val bitsC    = (byte2Short(x) >> (basePower - missingBits)).toByte
+          val mutatedR = (r | bitsC).toByte
+
+          // Mutate
+          result.update(resultOffset, mutatedR)
+          result
+
+        case -1 =>
+          val bitsC    = (byte2Short(x) >> (basePower - missingBits)).toByte
+          val bitsN    = ((x & mask(basePower - missingBits)) << (8 - (basePower - missingBits))).toByte
+          val mutatedR = (r | bitsC).toByte
+
+          // Mutate
+          result.update(resultOffset, mutatedR)
+          result.update(resultOffset + 1, bitsN)
+          fromBasePartial(input, basePower, result, offset + 1)
+      end match
   end match
 end fromBasePartial
 
@@ -104,4 +121,9 @@ def fromBase[S <: Array[Byte]](
     input: Array[Byte],
     basePower: BasePower
 ): Array[Byte] =
-  fromBasePartial(input, 0, basePower, Array.emptyByteArray)
+  fromBasePartial(
+    input,
+    basePower,
+    Array.fill[Byte]((input.length * basePower) / 8 + 1)(0.toByte),
+    offset = 0
+  ).dropRight(1)
