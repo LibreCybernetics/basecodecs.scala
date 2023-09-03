@@ -9,10 +9,12 @@ case class GenericCodec(
     basePower: BasePower,
     padding: Char
 ):
+  // toBase(basePower) should always be encodable by the alphabet
+  @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
   def encode(bytes: Array[Byte]): String =
-    toBase(bytes, basePower)
-      .flatMap(alphabet.apply(_))
-      .mkString
+    val stringBuilder = StringBuilder()
+    toBase(bytes, basePower).foreach(b => stringBuilder.append(alphabet(b).get))
+    stringBuilder.toString()
 
   inline def encode(string: String, charset: Charset): String =
     encode(string.getBytes(charset))
