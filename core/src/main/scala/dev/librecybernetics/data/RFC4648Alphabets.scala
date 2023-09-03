@@ -26,10 +26,10 @@ object RFC4648Alphabets:
   // Base16
 
   val base16Lowercase: PFnBijection[Byte, Char] =
-    decimalAlphabet ++ GenericAlphabet(10, 15, 'a', 'f', 87)
+    GenericAlphabet(10, 15, 'a', 'f', 87) ++ decimalAlphabet
 
   val base16Uppercase: PFnBijection[Byte, Char] =
-    decimalAlphabet ++ GenericAlphabet(10, 15, 'A', 'F', 55)
+    GenericAlphabet(10, 15, 'A', 'F', 55) ++ decimalAlphabet
 
   // Base32
 
@@ -40,10 +40,10 @@ object RFC4648Alphabets:
     decimalAlphabet ++ GenericAlphabet(10, 31, 'A', 'V', 55)
 
   val base32Lowercase: PFnBijection[Byte, Char] =
-    lowercaseStartAlphabet ++ base32DecimalAlphabet
+    base32DecimalAlphabet ++ lowercaseStartAlphabet
 
   val base32Uppercase: PFnBijection[Byte, Char] =
-    uppercaseStartAlphabet ++ base32DecimalAlphabet
+    base32DecimalAlphabet ++ uppercaseStartAlphabet
 
   // Base64
 
@@ -60,7 +60,7 @@ object RFC4648Alphabets:
     )
 
   val base64: PFnBijection[Byte, Char] =
-    uppercaseStartAlphabet ++ lowercaseMiddleAlphabet ++ base64DecimalAlphabet ++ base64Special
+    base64Special ++ base64DecimalAlphabet ++ lowercaseMiddleAlphabet ++ uppercaseStartAlphabet
 
   private val base64URLSafeSpecial: PFnBijection[Byte, Char] =
     Bijection(
@@ -75,5 +75,5 @@ object RFC4648Alphabets:
     )
 
   val base64URLSafe: PFnBijection[Byte, Char] =
-    uppercaseStartAlphabet ++ lowercaseMiddleAlphabet ++ base64DecimalAlphabet ++ base64URLSafeSpecial
+    base64URLSafeSpecial ++ base64DecimalAlphabet ++ lowercaseMiddleAlphabet ++ uppercaseStartAlphabet
 end RFC4648Alphabets

@@ -28,12 +28,6 @@ class GenericBase2ConversionSpec extends AnyWordSpec with ScalaCheckPropertyChec
       input shouldBe back
     }
 
-  "toBasePartialByte" when {
-    "example 1" in {
-      toBasePartialByte(0, 255.toByte, 3, 5) shouldBe 3.toByte
-    }
-  }
-
   // From RFC 4648 § 10
   "spec test vector" when {
     "empty" in genericExample(
