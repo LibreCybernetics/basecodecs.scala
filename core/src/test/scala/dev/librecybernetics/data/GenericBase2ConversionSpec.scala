@@ -21,17 +21,6 @@ class GenericBase2ConversionSpec extends AnyWordSpec with ScalaCheckPropertyChec
     }
   end genericExample
 
-  /** Generates a random byte array of length 0-100 with values [0, maxValue]
-    *
-    * NOTE: Range is inclusive
-    *
-    * TODO: Move to utils
-    */
-  def randomByteArray(maxValue: Int): Gen[Array[Byte]] = for
-    length <- Gen.choose(0, 100)
-    input  <- Gen.listOfN(length, Gen.choose(0, maxValue).map(_.toByte)).map(_.toArray)
-  yield input
-
   def fromTo(basePower: BasePower): Assertion =
     forAll(randomByteArray(255)) { (input: Array[Byte]) =>
       val converted = toBase(input, basePower)
