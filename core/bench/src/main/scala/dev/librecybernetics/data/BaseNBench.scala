@@ -20,7 +20,7 @@ object BaseNBench:
   )
 
   val rand = Random()
-  val data = rand.nextBytes(1024)
+  val data = rand.nextBytes(8 * 1024)
 end BaseNBench
 
 class BaseNBench:

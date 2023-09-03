@@ -7,12 +7,12 @@ import scala.util.NotGiven
 
 private[librecybernetics] type BasePower = 4 | 5 | 6
 
-private[librecybernetics] def byte2Short(byte: Byte) =
+private[librecybernetics] inline def byte2Short(inline byte: Byte) =
   if (byte < 0) (byte + 256).toShort else byte.toShort
 
-private[librecybernetics] def mask(basePower: Int): Byte = ((1 << basePower) - 1).toByte
+private[librecybernetics] inline def mask(inline basePower: Int): Byte = ((1 << basePower) - 1).toByte
 
-private[librecybernetics] def toBasePartialByte(
+private[librecybernetics] inline def toBasePartialByte(
     currentByte: Byte,
     nextByte: Byte,
     remainingBits: Int,
