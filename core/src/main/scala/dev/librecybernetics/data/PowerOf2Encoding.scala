@@ -2,20 +2,6 @@ package dev.librecybernetics.data
 
 import scala.annotation.tailrec
 
-private[librecybernetics] inline def toBasePartialByte(
-    currentByte: Byte,
-    nextByte: Byte,
-    remainingBits: Int,
-    basePower: BasePower
-): Byte =
-  val currentBits: Byte =
-    ((currentByte & mask(remainingBits)) << (basePower - remainingBits)).toByte
-  val nextBits: Byte    =
-    (byte2Short(nextByte) >> (8 - basePower + remainingBits)).toByte
-
-  (currentBits | nextBits).toByte
-end toBasePartialByte
-
 def toBase[S <: Array[Byte]](
     input: Array[Byte],
     basePower: BasePower
@@ -30,17 +16,24 @@ def toBase[S <: Array[Byte]](
     val remainingBits = 8 - (bits % 8)
 
     if (inputOffset < input.length) {
-      val x = input(inputOffset)
+      val currentByte = input(inputOffset)
       remainingBits compare basePower match
         case 0 | 1 => // EQ |GT
-          val bits = byte2Short(x) >> (remainingBits - basePower)
+          val bits =
+            ((byte2Short(currentByte) >> (remainingBits - basePower)) & mask(basePower)).toByte
 
           // Mutate
-          result.update(offset, (bits.toByte & mask(basePower)).toByte)
+          result.update(offset, bits)
           toBasePartial(offset + 1)
 
         case -1 => // LT
-          val bits = toBasePartialByte(x, input.unapply(inputOffset + 1).getOrElse(0), remainingBits, basePower)
+          val currentBits =
+            (currentByte & mask(remainingBits)) << (basePower - remainingBits)
+
+          val nextBits =
+            input.unapply(inputOffset + 1).fold(0.toShort)(byte2Short(_)) >> (8 - basePower + remainingBits)
+
+          val bits = (currentBits | nextBits).toByte
 
           // Mutate
           result.update(offset, bits)

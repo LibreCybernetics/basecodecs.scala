@@ -19,7 +19,7 @@ def fromBase[S <: Array[Byte]](
 
       missingBits compare basePower match
         case 0 | 1 =>
-          val bits     = (x << (missingBits - basePower)).toByte
+          val bits     = x << (missingBits - basePower)
           val mutatedR = (r | bits).toByte
 
           // Mutate and Recurse
@@ -27,14 +27,14 @@ def fromBase[S <: Array[Byte]](
           fromBasePartial(offset + 1)
 
         case -1 if offset >= input.length =>
-          val bitsC    = (byte2Short(x) >> (basePower - missingBits)).toByte
+          val bitsC    = byte2Short(x) >> (basePower - missingBits)
           val mutatedR = (r | bitsC).toByte
 
           // Mutate
           result.update(resultOffset, mutatedR)
 
         case -1 =>
-          val bitsC    = (byte2Short(x) >> (basePower - missingBits)).toByte
+          val bitsC    = byte2Short(x) >> (basePower - missingBits)
           val bitsN    = ((x & mask(basePower - missingBits)) << (8 - (basePower - missingBits))).toByte
           val mutatedR = (r | bitsC).toByte
 
