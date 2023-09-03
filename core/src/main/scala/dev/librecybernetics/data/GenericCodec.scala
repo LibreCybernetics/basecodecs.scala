@@ -20,6 +20,13 @@ case class GenericCodec(
   inline def encode(string: String): String =
     encode(string, defaultCharset)
 
+  inline def encode(input: Array[Byte] | String): String =
+    input match
+      case bytes: Array[Byte] => encode(bytes)
+      case string: String     => encode(string)
+    end match
+  end encode
+
   def decode(string: String): Array[Byte] =
     fromBase(
       string.takeWhile(_ != padding).flatMap(alphabet.reverse(_)).toArray,
