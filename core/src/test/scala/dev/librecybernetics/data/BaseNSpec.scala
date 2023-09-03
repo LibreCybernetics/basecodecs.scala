@@ -23,7 +23,7 @@ class BaseNSpec extends AnyWordSpec:
 
   "Base16Lowercase" when {
     def example(input: String, expected: String): Unit =
-      genericExample(input, expected, Base16Lowercase.encode, Base16Lowercase.decode)
+      genericExample(input, expected, Base16Lowercase.encode(_), Base16Lowercase.decode(_))
 
     example("", "")
     example("f", "66")
@@ -36,7 +36,7 @@ class BaseNSpec extends AnyWordSpec:
 
   "Base16Uppercase" when {
     def example(input: String, expected: String): Unit =
-      genericExample(input, expected, Base16Uppercase.encode, Base16Uppercase.decode)
+      genericExample(input, expected, Base16Uppercase.encode(_), Base16Uppercase.decode(_))
 
     example("", "")
     example("f", "66")
@@ -49,7 +49,7 @@ class BaseNSpec extends AnyWordSpec:
 
   "Base32HexLowercase" when {
     def example(input: String, expected: String): Unit =
-      genericExample(input, expected, Base32HexLowercase.encode, Base32HexLowercase.decode)
+      genericExample(input, expected, Base32HexLowercase.encode(_), Base32HexLowercase.decode(_))
 
     example("", "")
     example("f", "co")
@@ -62,7 +62,7 @@ class BaseNSpec extends AnyWordSpec:
 
   "Base32HexUppercase" when {
     def example(input: String, expected: String): Unit =
-      genericExample(input, expected, Base32HexUppercase.encode, Base32HexUppercase.decode)
+      genericExample(input, expected, Base32HexUppercase.encode(_), Base32HexUppercase.decode(_))
 
     example("", "")
     example("f", "CO")
@@ -75,7 +75,7 @@ class BaseNSpec extends AnyWordSpec:
 
   "Base32Lowercase" when {
     def example(input: String, expected: String): Unit =
-      genericExample(input, expected, Base32Lowercase.encode, Base32Lowercase.decode)
+      genericExample(input, expected, Base32Lowercase.encode(_), Base32Lowercase.decode(_))
 
     example("", "")
     example("f", "my")
@@ -88,7 +88,7 @@ class BaseNSpec extends AnyWordSpec:
 
   "Base32Uppercase" when {
     def example(input: String, expected: String): Unit =
-      genericExample(input, expected, Base32Uppercase.encode, Base32Uppercase.decode)
+      genericExample(input, expected, Base32Uppercase.encode(_), Base32Uppercase.decode(_))
 
     example("", "")
     example("f", "MY")
@@ -101,7 +101,7 @@ class BaseNSpec extends AnyWordSpec:
 
   "Base64" when {
     def example(input: String, expected: String): Unit =
-      genericExample(input, expected, Base64.encode, Base64.decode)
+      genericExample(input, expected, Base64.encode(_), Base64.decode(_))
 
     example("", "")
     example("f", "Zg")
@@ -114,7 +114,7 @@ class BaseNSpec extends AnyWordSpec:
 
   "Base64URLSafe" when {
     def example(input: String, expected: String): Unit =
-      genericExample(input, expected, Base64URLSafe.encode, Base64URLSafe.decode)
+      genericExample(input, expected, Base64URLSafe.encode(_), Base64URLSafe.decode(_))
 
     example("", "")
     example("f", "Zg")
