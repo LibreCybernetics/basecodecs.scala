@@ -23,28 +23,27 @@ object RFC4648Alphabets:
   private val lowercaseMiddleAlphabet: PFnBijection[Byte, Char] =
     GenericAlphabet(26, 51, 'a', 'z', 71)
 
-
   // Base16
 
-  val Right(base16Lowercase): Either[Bijection.Error, PFnBijection[Byte, Char]] =
-    decimalAlphabet ++ GenericAlphabet(10, 15, 'a', 'f', 87): @unchecked
+  val base16Lowercase: PFnBijection[Byte, Char] =
+    decimalAlphabet ++ GenericAlphabet(10, 15, 'a', 'f', 87)
 
-  val Right(base16Uppercase): Either[Bijection.Error, PFnBijection[Byte, Char]] =
-    decimalAlphabet ++ GenericAlphabet(10, 15, 'A', 'F', 55): @unchecked
+  val base16Uppercase: PFnBijection[Byte, Char] =
+    decimalAlphabet ++ GenericAlphabet(10, 15, 'A', 'F', 55)
 
   // Base32
 
-  val Right(base32HexLowercase): Either[Bijection.Error, PFnBijection[Byte, Char]] =
-    decimalAlphabet ++ GenericAlphabet(10, 31, 'a', 'v', 87): @unchecked
+  val base32HexLowercase: PFnBijection[Byte, Char] =
+    decimalAlphabet ++ GenericAlphabet(10, 31, 'a', 'v', 87)
 
-  val Right(base32HexUppercase): Either[Bijection.Error, PFnBijection[Byte, Char]] =
-    decimalAlphabet ++ GenericAlphabet(10, 31, 'A', 'V', 55): @unchecked
+  val base32HexUppercase: PFnBijection[Byte, Char] =
+    decimalAlphabet ++ GenericAlphabet(10, 31, 'A', 'V', 55)
 
-  val Right(base32Lowercase): Either[Bijection.Error, PFnBijection[Byte, Char]] =
-    lowercaseStartAlphabet ++ base32DecimalAlphabet: @unchecked
+  val base32Lowercase: PFnBijection[Byte, Char] =
+    lowercaseStartAlphabet ++ base32DecimalAlphabet
 
-  val Right(base32Uppercase): Either[Bijection.Error, PFnBijection[Byte, Char]] =
-    uppercaseStartAlphabet ++ base32DecimalAlphabet: @unchecked
+  val base32Uppercase: PFnBijection[Byte, Char] =
+    uppercaseStartAlphabet ++ base32DecimalAlphabet
 
   // Base64
 
@@ -60,12 +59,8 @@ object RFC4648Alphabets:
       }: PartialFunction[Char, Byte]
     )
 
-  val Right(base64): Either[Bijection.Error, PFnBijection[Byte, Char]] =
-    (for
-      alpha           <- uppercaseStartAlphabet ++ lowercaseMiddleAlphabet
-      alphanum        <- alpha ++ base64DecimalAlphabet
-      alphanumspecial <- alphanum ++ base64Special
-    yield alphanumspecial): @unchecked
+  val base64: PFnBijection[Byte, Char] =
+    uppercaseStartAlphabet ++ lowercaseMiddleAlphabet ++ base64DecimalAlphabet ++ base64Special
 
   private val base64URLSafeSpecial: PFnBijection[Byte, Char] =
     Bijection(
@@ -79,10 +74,6 @@ object RFC4648Alphabets:
       }: PartialFunction[Char, Byte]
     )
 
-  val Right(base64URLSafe): Either[Bijection.Error, PFnBijection[Byte, Char]] =
-    (for
-      alpha           <- uppercaseStartAlphabet ++ lowercaseMiddleAlphabet
-      alphanum        <- alpha ++ base64DecimalAlphabet
-      alphanumspecial <- alphanum ++ base64URLSafeSpecial
-    yield alphanumspecial): @unchecked
+  val base64URLSafe: PFnBijection[Byte, Char] =
+    uppercaseStartAlphabet ++ lowercaseMiddleAlphabet ++ base64DecimalAlphabet ++ base64URLSafeSpecial
 end RFC4648Alphabets
