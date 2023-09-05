@@ -5,7 +5,7 @@ import org.scalatest.Assertion
 import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.prop.TableDrivenPropertyChecks.Table
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.scalacheck.*
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 class GenericBase2ConversionSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
   def genericExample(input: String, expected: Map[BasePower, Array[Byte]]): Assertion =
@@ -89,6 +89,8 @@ class GenericBase2ConversionSpec extends AnyWordSpec with ScalaCheckPropertyChec
   }
 
   "from . to = identity" when {
+    "base 2" in fromTo(1)
+    "base 8" in fromTo(3)
     "base 16" in fromTo(4)
     "base 32" in fromTo(5)
     "base 64" in fromTo(6)

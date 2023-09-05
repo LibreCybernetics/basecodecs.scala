@@ -17,7 +17,6 @@
         config = rec {
           packages = with pkgs; [
             async-profiler
-            dbmate
             jdk
             llvmPackages_15.clang
             nodejs

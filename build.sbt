@@ -12,8 +12,8 @@ ThisBuild / licenses     := Seq(
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
-    url("https://github.com/LibreCybernetics/rfc4648.scala"),
-    "scm:git@github.com:LibreCybernetics/rfc4648.scala.git"
+    url("https://github.com/LibreCybernetics/basecodecs.scala"),
+    "scm:git@github.com:LibreCybernetics/basecodecs.scala.git"
   )
 )
 
@@ -40,10 +40,10 @@ val sharedSettings = Seq(
   resolvers    := Seq(
     Resolver.mavenLocal,
     "Jitpack" at "https://jitpack.io",
-    "GitHub Package Registry" at "https://maven.pkg.github.com/LibreCybernetics/rfc4648.scala"
+    "GitHub Package Registry" at "https://maven.pkg.github.com/LibreCybernetics/basecodecs.scala"
   ),
   publishTo    := Some(
-    "GitHub Package Registry" at "https://maven.pkg.github.com/LibreCybernetics/rfc4648.scala"
+    "GitHub Package Registry" at "https://maven.pkg.github.com/LibreCybernetics/basecodecs.scala"
   ),
   credentials  := Seq(
     Credentials(
@@ -63,7 +63,7 @@ val core =
     .in(file("core"))
     .settings(sharedSettings)
     .settings(
-      name := "rfc4648-core",
+      name := "basecodecs-core",
       libraryDependencies ++= Seq(
         "dev.librecybernetics.bijection~scala" %%% "bijection-core"     % Version.bijection,
         "org.scalatest"                        %%% "scalatest"          % Version.scalatest          % Test,
@@ -92,12 +92,11 @@ val root: CrossProject =
     .enablePlugins(ScalaUnidocPlugin)
     .settings(sharedSettings)
     .settings(
-      name                                       := "rfc4648",
+      name                                       := "basecodecs",
       ScalaUnidoc / unidoc / unidocProjectFilter := inProjects(thisProject.value.aggregate*)
     )
 
-// To avoid publishing the default root package / `rfc4648-scala`
-
+// To avoid publishing the default root package
 val fakeRoot = (project in file("."))
   .settings(
     publish / skip  := true,
