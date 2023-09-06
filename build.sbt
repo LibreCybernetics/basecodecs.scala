@@ -37,9 +37,6 @@ val sharedSettings = Seq(
     "-Ysafe-init",
     "-Xfatal-warnings"
   ),
-  scalaJSLinkerConfig ~= {
-    _.withSemantics(_.withArrayIndexOutOfBounds(org.scalajs.linker.interface.CheckedBehavior.Compliant))
-  },
   resolvers    := Seq(
     Resolver.mavenLocal,
     "Jitpack" at "https://jitpack.io",
@@ -82,7 +79,10 @@ val `core-bench` =
     .dependsOn(core)
     .settings(sharedSettings)
     .settings(
-      githubWorkflowArtifactUpload := false
+      githubWorkflowArtifactUpload := false,
+      libraryDependencies ++= Seq(
+        "commons-codec"          % "commons-codec" % Version.commonsCodec
+      )
     )
     .enablePlugins(JmhPlugin)
 
