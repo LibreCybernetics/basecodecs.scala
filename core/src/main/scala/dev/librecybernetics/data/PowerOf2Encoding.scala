@@ -10,6 +10,30 @@ def toBase(
   val result = Array.ofDim[Byte](bits / basePower + (if (bits % basePower == 0) 0 else 1))
 
   @tailrec
+  def toBasePartialBase6(offset: Int): Unit =
+    val inputOffset = (offset * 6) / 8
+    val diff        = input.length - inputOffset
+    if (diff > 0) {
+      val byte1 = input(inputOffset)
+      val byte2 = if (diff > 1) input(inputOffset + 1) else 0.toByte
+      val byte3 = if (diff > 2) input(inputOffset + 2) else 0.toByte
+
+      val out1 = ((byte1 >> 2) & 0x3f).toByte
+      val out2 = (((byte1 & 0x03) << 4) | ((byte2 >> 4) & 0x0f)).toByte
+      result.update(offset, out1)
+      result.update(offset + 1, out2)
+      if (diff > 1)
+        val out3 = (((byte2 & 0x0f) << 2) | ((byte3 >> 6) & 0x03)).toByte
+        result.update(offset + 2, out3)
+      if (diff > 2)
+        val out4 = (byte3 & 0x3f).toByte
+        result.update(offset + 3, out4)
+
+      // Recurse
+      toBasePartialBase6(offset + 4)
+    }
+
+  @tailrec
   def toBasePartial(offset: Int): Unit =
     val bits          = offset * basePower
     val inputOffset   = bits / 8
@@ -29,7 +53,6 @@ def toBase(
         val currentBits =
           (currentByte & mask(remainingBits)) << (basePower - remainingBits)
 
-
         val nextBits = if (inputOffset < input.length - 1) {
           byte2Short(input(inputOffset + 1)) >> (8 - basePower + remainingBits)
         } else 0
@@ -43,7 +66,10 @@ def toBase(
     }
   end toBasePartial
 
-  toBasePartial(offset = 0)
+  basePower match
+    case 6 => toBasePartialBase6(0)
+    case _ => toBasePartial(0)
+  end match
 
   result
 end toBase
