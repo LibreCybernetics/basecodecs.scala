@@ -62,11 +62,6 @@ val core =
     .crossType(CrossType.Pure)
     .in(file("core"))
     .settings(sharedSettings)
-    .jsSettings(
-      scalaJSLinkerConfig ~= {
-        _.withSemantics(_.withArrayIndexOutOfBounds(org.scalajs.linker.interface.CheckedBehavior.Compliant))
-      }
-    )
     .settings(
       name := "basecodecs-core",
       libraryDependencies ++= Seq(
@@ -84,7 +79,10 @@ val `core-bench` =
     .dependsOn(core)
     .settings(sharedSettings)
     .settings(
-      githubWorkflowArtifactUpload := false
+      githubWorkflowArtifactUpload := false,
+      libraryDependencies ++= Seq(
+        "commons-codec"          % "commons-codec" % Version.commonsCodec
+      )
     )
     .enablePlugins(JmhPlugin)
 
