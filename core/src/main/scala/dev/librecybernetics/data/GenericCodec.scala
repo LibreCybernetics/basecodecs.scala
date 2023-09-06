@@ -64,9 +64,11 @@ case class GenericCodec(
   ](string: String): F[Array[Byte]] =
     val merr: MonadError[F, GenericCodec.Error] = implicitly
 
+    def padLength = string.reverseIterator.takeWhile(padding.contains).length
+
     try
       val input = string
-        .takeWhile(!padding.contains(_))
+        .dropRight(padLength)
         .map { c =>
           alphabet
             .reverse(c)
