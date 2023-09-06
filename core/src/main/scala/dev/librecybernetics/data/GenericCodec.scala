@@ -1,6 +1,12 @@
 package dev.librecybernetics.data
 
 import java.nio.charset.{Charset, StandardCharsets}
+import scala.util.Try
+
+import cats.MonadError
+import cats.syntax.all.*
+
+import dev.librecybernetics.data.GenericCodec.Error.UnrecognizedChar
 
 private val defaultCharset = Charset.defaultCharset()
 
@@ -9,12 +15,16 @@ case class GenericCodec(
     basePower: BasePower,
     padding: Option[Char]
 ):
-  // toBase(basePower) should always be encodable by the alphabet
+  //////////////
+  // Encoding //
+  //////////////
+
   @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
   def encode(bytes: Array[Byte]): String =
     val stringBuilder = StringBuilder()
 
     // Main content
+    // NOTE: toBase(basePower) should always be encodable by the alphabet
     val encoded = toBase(bytes, basePower).map(alphabet(_).get)
     stringBuilder.appendAll(encoded)
 
@@ -44,22 +54,42 @@ case class GenericCodec(
     end match
   end encode
 
-  def decode(string: String): Array[Byte] =
-    fromBase(
-      string.takeWhile(c => !padding.contains(c)).flatMap(alphabet.reverse(_)).toArray,
-      basePower
-    )
+  //////////////
+  // Decoding //
+  //////////////
 
-  inline def decode(string: String, charset: Charset): String =
-    String(decode(string), charset)
+  @SuppressWarnings(Array("org.wartremover.warts.Throw"))
+  def decode[
+      F[_]: [F[_]] =>> MonadError[F, GenericCodec.Error]
+  ](string: String): F[Array[Byte]] =
+    val merr: MonadError[F, GenericCodec.Error] = implicitly
 
-  inline def decodeUTF8(string: String): String =
+    try
+      val input = string
+        .takeWhile(!padding.contains(_))
+        .map { c =>
+          alphabet
+            .reverse(c)
+            .getOrElse(throw UnrecognizedChar(c))
+        }
+        .toArray
+      merr.pure(fromBase(input, basePower))
+    catch case e: UnrecognizedChar => merr.raiseError(e)
+    end try
+
+  inline def decode[
+      F[_]: [F[_]] =>> MonadError[F, GenericCodec.Error]
+  ](string: String, charset: Charset): F[String] =
+    decode(string).map(String(_, charset))
+
+  inline def decodeUTF8[
+      F[_]: [F[_]] =>> MonadError[F, GenericCodec.Error]
+  ](string: String): F[String] =
     decode(string, StandardCharsets.UTF_8)
 end GenericCodec
 
 object GenericCodec:
-  inline def apply(
-      alphabet: PFnBijection[Byte, Char],
-      basePower: BasePower
-  ): GenericCodec = GenericCodec(alphabet, basePower, Some('='))
+  enum Error extends Throwable:
+    case UnrecognizedChar(char: Char)
+  end Error
 end GenericCodec
