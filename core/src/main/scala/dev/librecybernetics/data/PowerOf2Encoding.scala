@@ -7,7 +7,7 @@ def toBase[S <: Array[Byte]](
     basePower: BasePower
 ): Array[Byte] =
   val bits   = input.length * 8
-  val result = Array.ofDim[Byte](bits / basePower + 1)
+  val result = Array.ofDim[Byte](bits / basePower + (if (bits % basePower == 0) 0 else 1))
 
   @tailrec
   def toBasePartial(offset: Int): Unit =
@@ -44,5 +44,5 @@ def toBase[S <: Array[Byte]](
 
   toBasePartial(offset = 0)
 
-  result.dropRight(if (bits % basePower == 0) 1 else 0)
+  result
 end toBase

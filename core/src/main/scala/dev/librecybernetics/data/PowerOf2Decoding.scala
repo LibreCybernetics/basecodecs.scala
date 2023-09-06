@@ -6,7 +6,7 @@ def fromBase[S <: Array[Byte]](
     input: Array[Byte],
     basePower: BasePower
 ): Array[Byte] =
-  val result = Array.ofDim[Byte]((input.length * basePower) / 8 + 1)
+  val result = Array.ofDim[Byte]((input.length * basePower) / 8)
 
   @tailrec
   def fromBasePartial(offset: Int): Unit =
@@ -26,7 +26,7 @@ def fromBase[S <: Array[Byte]](
           result.update(resultOffset, mutatedR)
           fromBasePartial(offset + 1)
 
-        case -1 if offset >= input.length =>
+        case -1 if offset >= input.length - 1 =>
           val bitsC    = byte2Short(x) >> (basePower - missingBits)
           val mutatedR = (r | bitsC).toByte
 
@@ -48,4 +48,4 @@ def fromBase[S <: Array[Byte]](
 
   fromBasePartial(0)
 
-  result.dropRight(1)
+  result
