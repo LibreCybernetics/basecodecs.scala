@@ -2,7 +2,7 @@ package dev.librecybernetics.data
 
 import scala.annotation.tailrec
 
-def toBase[S <: Array[Byte]](
+def toBase(
     input: Array[Byte],
     basePower: BasePower
 ): Array[Byte] =
@@ -29,9 +29,10 @@ def toBase[S <: Array[Byte]](
         val currentBits =
           (currentByte & mask(remainingBits)) << (basePower - remainingBits)
 
-        val nextBits =
-          try byte2Short(input(inputOffset + 1)) >> (8 - basePower + remainingBits)
-          catch case _: ArrayIndexOutOfBoundsException => 0
+
+        val nextBits = if (inputOffset < input.length - 1) {
+          byte2Short(input(inputOffset + 1)) >> (8 - basePower + remainingBits)
+        } else 0
 
         val bits = (currentBits | nextBits).toByte
 

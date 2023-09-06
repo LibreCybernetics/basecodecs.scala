@@ -2,7 +2,7 @@ package dev.librecybernetics.data
 
 import scala.annotation.tailrec
 
-def fromBase[S <: Array[Byte]](
+def fromBase(
     input: Array[Byte],
     basePower: BasePower
 ): Array[Byte] =
@@ -17,35 +17,29 @@ def fromBase[S <: Array[Byte]](
       val missingBits  = 8 - (bits % 8)
       val r            = result(resultOffset)
 
-      missingBits compare basePower match
-        case 0 | 1 =>
-          val bits     = x << (missingBits - basePower)
-          val mutatedR = (r | bits).toByte
+      if (missingBits >= basePower) {
+        val bits     = x << (missingBits - basePower)
+        val mutatedR = (r | bits).toByte
 
-          // Mutate and Recurse
-          result.update(resultOffset, mutatedR)
-          fromBasePartial(offset + 1)
+        // Mutate and Recurse
+        result.update(resultOffset, mutatedR)
+        fromBasePartial(offset + 1)
+      } else {
+        val bitsC    = byte2Short(x) >> (basePower - missingBits)
+        val mutatedR = (r | bitsC).toByte
 
-        case -1 if offset >= input.length - 1 =>
-          val bitsC    = byte2Short(x) >> (basePower - missingBits)
-          val mutatedR = (r | bitsC).toByte
-
-          // Mutate
-          result.update(resultOffset, mutatedR)
-
-        case -1 =>
-          val bitsC    = byte2Short(x) >> (basePower - missingBits)
-          val bitsN    = ((x & mask(basePower - missingBits)) << (8 - (basePower - missingBits))).toByte
-          val mutatedR = (r | bitsC).toByte
-
-          // Mutate and Recurse
-          result.update(resultOffset, mutatedR)
+        // Mutate and Recurse
+        result.update(resultOffset, mutatedR)
+        if (offset < input.length - 1) {
+          val bitsN = ((x & mask(basePower - missingBits)) << (8 - (basePower - missingBits))).toByte
           result.update(resultOffset + 1, bitsN)
-          fromBasePartial(offset + 1)
-      end match
+        }
+        fromBasePartial(offset + 1)
+      }
     }
   end fromBasePartial
 
   fromBasePartial(0)
 
   result
+end fromBase
