@@ -13,8 +13,8 @@ class BaseNSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
       examples: (Array[Byte] | String, String)*
   ): Assertion =
     forAll(Table("Input" -> "Encoded", examples*)) { (input, expected) =>
-      val encoded = codec.encode(input)
-      val decoded = codec.decode(expected)
+      val encoded        = codec.encode(input)
+      val Right(decoded) = codec.decode(expected): @unchecked
 
       encoded shouldBe expected
 
@@ -25,8 +25,8 @@ class BaseNSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
     }
 
     forAll(randomByteArray(255)) { input =>
-      val encoded = codec.encode(input)
-      val decoded = codec.decode(encoded)
+      val encoded        = codec.encode(input)
+      val Right(decoded) = codec.decode(encoded): @unchecked
 
       decoded shouldBe input
     }

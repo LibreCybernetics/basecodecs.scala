@@ -31,7 +31,7 @@ def toBase[S <: Array[Byte]](
 
         val nextBits =
           try byte2Short(input(inputOffset + 1)) >> (8 - basePower + remainingBits)
-          catch case e: ArrayIndexOutOfBoundsException => 0
+          catch case _: ArrayIndexOutOfBoundsException => 0
 
         val bits = (currentBits | nextBits).toByte
 
