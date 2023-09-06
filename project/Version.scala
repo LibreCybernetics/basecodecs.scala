@@ -1,6 +1,6 @@
 object Version {
   // Scala
-  lazy val scala = "3.3.0"
+  lazy val scala = "3.3.1"
 
   // LibreCybernetics
 
