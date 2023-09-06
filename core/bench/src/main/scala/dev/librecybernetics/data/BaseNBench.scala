@@ -31,8 +31,8 @@ class BaseNBench:
 
     def futures() = BaseNBench.codecs.map { codec =>
       Future {
-        val encoded = codec.encode(BaseNBench.data8k)
-        val decoded = codec.decode(encoded)
+        val encoded        = codec.encode(BaseNBench.data8k)
+        val Right(decoded) = codec.decode(encoded): @unchecked
         assert(decoded sameElements BaseNBench.data8k)
       }
     }
