@@ -37,6 +37,9 @@ val sharedSettings = Seq(
     "-Ysafe-init",
     "-Xfatal-warnings"
   ),
+  scalaJSLinkerConfig ~= {
+    _.withSemantics(_.withArrayIndexOutOfBounds(org.scalajs.linker.interface.CheckedBehavior.Compliant))
+  },
   resolvers    := Seq(
     Resolver.mavenLocal,
     "Jitpack" at "https://jitpack.io",

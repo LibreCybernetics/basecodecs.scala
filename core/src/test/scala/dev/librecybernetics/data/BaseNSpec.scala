@@ -13,8 +13,8 @@ class BaseNSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
       examples: (Array[Byte] | String, String)*
   ): Assertion =
     forAll(Table("Input" -> "Encoded", examples*)) { (input, expected) =>
-      val encoded = codec.encode(input)
-      val decoded = codec.decode(expected)
+      val encoded        = codec.encode(input)
+      val Right(decoded) = codec.decode(expected): @unchecked
 
       encoded shouldBe expected
 
@@ -25,8 +25,8 @@ class BaseNSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
     }
 
     forAll(randomByteArray(255)) { input =>
-      val encoded = codec.encode(input)
-      val decoded = codec.decode(encoded)
+      val encoded        = codec.encode(input)
+      val Right(decoded) = codec.decode(encoded): @unchecked
 
       decoded shouldBe input
     }
@@ -46,10 +46,10 @@ class BaseNSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
     ""       -> "",
     "f"      -> "314",
     "fo"     -> "314674",
-    "foo"    -> "31467557",
-    "foob"   -> "31467557304",
-    "fooba"  -> "31467557304604",
-    "foobar" -> "3146755730460562"
+    "foo"    -> "31467557=",
+    "foob"   -> "31467557304=",
+    "fooba"  -> "31467557304604=",
+    "foobar" -> "3146755730460562=="
   )
 
   "Base16Lowercase" in genericTest(Base16Lowercase)(
@@ -74,61 +74,61 @@ class BaseNSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
 
   "Base32HexLowercase" in genericTest(Base32HexLowercase)(
     ""       -> "",
-    "f"      -> "co",
-    "fo"     -> "cpng",
-    "foo"    -> "cpnmu",
-    "foob"   -> "cpnmuog",
+    "f"      -> "co======",
+    "fo"     -> "cpng====",
+    "foo"    -> "cpnmu===",
+    "foob"   -> "cpnmuog=",
     "fooba"  -> "cpnmuoj1",
-    "foobar" -> "cpnmuoj1e8"
+    "foobar" -> "cpnmuoj1e8======"
   )
 
   "Base32HexUppercase" in genericTest(Base32HexUppercase)(
     ""       -> "",
-    "f"      -> "CO",
-    "fo"     -> "CPNG",
-    "foo"    -> "CPNMU",
-    "foob"   -> "CPNMUOG",
+    "f"      -> "CO======",
+    "fo"     -> "CPNG====",
+    "foo"    -> "CPNMU===",
+    "foob"   -> "CPNMUOG=",
     "fooba"  -> "CPNMUOJ1",
-    "foobar" -> "CPNMUOJ1E8"
+    "foobar" -> "CPNMUOJ1E8======"
   )
 
   "Base32Lowercase" in genericTest(Base32Lowercase)(
     ""       -> "",
-    "f"      -> "my",
-    "fo"     -> "mzxq",
-    "foo"    -> "mzxw6",
-    "foob"   -> "mzxw6yq",
+    "f"      -> "my======",
+    "fo"     -> "mzxq====",
+    "foo"    -> "mzxw6===",
+    "foob"   -> "mzxw6yq=",
     "fooba"  -> "mzxw6ytb",
-    "foobar" -> "mzxw6ytboi"
+    "foobar" -> "mzxw6ytboi======"
   )
 
   "Base32Uppercase" in genericTest(Base32Uppercase)(
     ""       -> "",
-    "f"      -> "MY",
-    "fo"     -> "MZXQ",
-    "foo"    -> "MZXW6",
-    "foob"   -> "MZXW6YQ",
+    "f"      -> "MY======",
+    "fo"     -> "MZXQ====",
+    "foo"    -> "MZXW6===",
+    "foob"   -> "MZXW6YQ=",
     "fooba"  -> "MZXW6YTB",
-    "foobar" -> "MZXW6YTBOI"
+    "foobar" -> "MZXW6YTBOI======"
   )
 
   "Base64" in genericTest(Base64)(
     ""       -> "",
-    "f"      -> "Zg",
-    "fo"     -> "Zm8",
+    "f"      -> "Zg==",
+    "fo"     -> "Zm8=",
     "foo"    -> "Zm9v",
-    "foob"   -> "Zm9vYg",
-    "fooba"  -> "Zm9vYmE",
+    "foob"   -> "Zm9vYg==",
+    "fooba"  -> "Zm9vYmE=",
     "foobar" -> "Zm9vYmFy"
   )
 
   "Base64URLSafe" in genericTest(Base64URLSafe)(
     ""       -> "",
-    "f"      -> "Zg",
-    "fo"     -> "Zm8",
+    "f"      -> "Zg==",
+    "fo"     -> "Zm8=",
     "foo"    -> "Zm9v",
-    "foob"   -> "Zm9vYg",
-    "fooba"  -> "Zm9vYmE",
+    "foob"   -> "Zm9vYg==",
+    "fooba"  -> "Zm9vYmE=",
     "foobar" -> "Zm9vYmFy"
   )
 
