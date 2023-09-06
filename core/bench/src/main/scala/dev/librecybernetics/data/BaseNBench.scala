@@ -19,8 +19,9 @@ object BaseNBench:
     Base64URLSafe
   )
 
-  val rand = Random()
-  val data = rand.nextBytes(8 * 1024)
+  val rand   = Random()
+  val data1k = rand.nextBytes(1024)
+  val data8k = rand.nextBytes(8 * 1024)
 end BaseNBench
 
 class BaseNBench:
@@ -30,9 +31,9 @@ class BaseNBench:
 
     def futures() = BaseNBench.codecs.map { codec =>
       Future {
-        val encoded = codec.encode(BaseNBench.data)
+        val encoded = codec.encode(BaseNBench.data8k)
         val decoded = codec.decode(encoded)
-        assert(decoded sameElements BaseNBench.data)
+        assert(decoded sameElements BaseNBench.data8k)
       }
     }
 

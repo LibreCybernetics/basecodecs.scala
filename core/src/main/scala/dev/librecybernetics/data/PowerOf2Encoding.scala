@@ -17,30 +17,31 @@ def toBase[S <: Array[Byte]](
 
     if (inputOffset < input.length) {
       val currentByte = input(inputOffset)
-      remainingBits compare basePower match
-        case 0 | 1 => // EQ |GT
-          val bits =
-            ((byte2Short(currentByte) >> (remainingBits - basePower)) & mask(basePower)).toByte
 
-          // Mutate
-          result.update(offset, bits)
-          toBasePartial(offset + 1)
+      if (remainingBits >= basePower) {
+        val bits =
+          ((byte2Short(currentByte) >> (remainingBits - basePower)) & mask(basePower)).toByte
 
-        case -1 => // LT
-          val currentBits =
-            (currentByte & mask(remainingBits)) << (basePower - remainingBits)
+        // Mutate
+        result.update(offset, bits)
+        toBasePartial(offset + 1)
+      } else {
+        val currentBits =
+          (currentByte & mask(remainingBits)) << (basePower - remainingBits)
 
-          val nextBits =
-            input.unapply(inputOffset + 1).fold(0.toShort)(byte2Short(_)) >> (8 - basePower + remainingBits)
+        val nextBits =
+          input.unapply(inputOffset + 1).fold(0.toShort)(byte2Short(_)) >> (8 - basePower + remainingBits)
 
-          val bits = (currentBits | nextBits).toByte
+        val bits = (currentBits | nextBits).toByte
 
-          // Mutate
-          result.update(offset, bits)
-          toBasePartial(offset + 1)
+        // Mutate
+        result.update(offset, bits)
+        toBasePartial(offset + 1)
+      }
     }
   end toBasePartial
 
   toBasePartial(offset = 0)
 
   result.dropRight(if (bits % basePower == 0) 1 else 0)
+end toBase

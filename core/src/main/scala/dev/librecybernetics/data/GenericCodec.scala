@@ -13,7 +13,7 @@ case class GenericCodec(
   @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
   def encode(bytes: Array[Byte]): String =
     val stringBuilder = StringBuilder()
-    toBase(bytes, basePower).foreach(b => stringBuilder.append(alphabet(b).get))
+    stringBuilder.appendAll(toBase(bytes, basePower).map(alphabet(_).get))
     stringBuilder.toString()
 
   inline def encode(string: String, charset: Charset): String =

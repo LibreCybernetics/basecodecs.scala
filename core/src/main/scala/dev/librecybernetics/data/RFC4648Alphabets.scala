@@ -1,79 +1,117 @@
 package dev.librecybernetics.data
 
 object RFC4648Alphabets:
-  // Decimal-generics
-
-  private val decimalAlphabet: PFnBijection[Byte, Char] =
-    GenericAlphabet(0, 9, '0', '9', 48)
-
-  private val base32DecimalAlphabet: PFnBijection[Byte, Char] =
-    GenericAlphabet(26, 31, '2', '7', 24)
-
-  private val base64DecimalAlphabet: PFnBijection[Byte, Char] =
-    GenericAlphabet(52, 61, '0', '9', -4)
-
-  // Alpha-generics
-
-  private val lowercaseStartAlphabet: PFnBijection[Byte, Char] =
-    GenericAlphabet(0, 25, 'a', 'z', 97)
-
-  private val uppercaseStartAlphabet: PFnBijection[Byte, Char] =
-    GenericAlphabet(0, 25, 'A', 'Z', 65)
-
-  private val lowercaseMiddleAlphabet: PFnBijection[Byte, Char] =
-    GenericAlphabet(26, 51, 'a', 'z', 71)
-
   // Base16
 
   val base16Lowercase: PFnBijection[Byte, Char] =
-    GenericAlphabet(10, 15, 'a', 'f', 87) ++ decimalAlphabet
+    Bijection(
+      {
+        case i if 0 <= i && i <= 9   => (i + 48).toChar
+        case i if 10 <= i && i <= 15 => (i + 87).toChar
+      }: PartialFunction[Byte, Char],
+      {
+        case c if '0' <= c && c <= '9' => (c - 48).toByte
+        case c if 'a' <= c && c <= 'f' => (c - 87).toByte
+      }: PartialFunction[Char, Byte]
+    )
 
   val base16Uppercase: PFnBijection[Byte, Char] =
-    GenericAlphabet(10, 15, 'A', 'F', 55) ++ decimalAlphabet
+    Bijection(
+      {
+        case i if 0 <= i && i <= 9   => (i + 48).toChar
+        case i if 10 <= i && i <= 15 => (i + 55).toChar
+      }: PartialFunction[Byte, Char],
+      {
+        case c if '0' <= c && c <= '9' => (c - 48).toByte
+        case c if 'A' <= c && c <= 'F' => (c - 55).toByte
+      }: PartialFunction[Char, Byte]
+    )
 
   // Base32
 
   val base32HexLowercase: PFnBijection[Byte, Char] =
-    decimalAlphabet ++ GenericAlphabet(10, 31, 'a', 'v', 87)
+    Bijection(
+      {
+        case i if 10 <= i && i <= 31 => (i + 87).toChar
+        case i if 0 <= i && i <= 9   => (i + 48).toChar
+      }: PartialFunction[Byte, Char],
+      {
+        case c if 'a' <= c && c <= 'v' => (c - 87).toByte
+        case c if '0' <= c && c <= '9' => (c - 48).toByte
+      }: PartialFunction[Char, Byte]
+    )
 
   val base32HexUppercase: PFnBijection[Byte, Char] =
-    decimalAlphabet ++ GenericAlphabet(10, 31, 'A', 'V', 55)
+    Bijection(
+      {
+        case i if 10 <= i && i <= 31 => (i + 55).toChar
+        case i if 0 <= i && i <= 9   => (i + 48).toChar
+      }: PartialFunction[Byte, Char],
+      {
+        case c if 'A' <= c && c <= 'V' => (c - 55).toByte
+        case c if '0' <= c && c <= '9' => (c - 48).toByte
+      }: PartialFunction[Char, Byte]
+    )
 
   val base32Lowercase: PFnBijection[Byte, Char] =
-    base32DecimalAlphabet ++ lowercaseStartAlphabet
+    Bijection(
+      {
+        case i if 0 <= i && i <= 25  => (i + 97).toChar
+        case i if 26 <= i && i <= 31 => (i + 24).toChar
+      }: PartialFunction[Byte, Char],
+      {
+        case c if 'a' <= c && c <= 'z' => (c - 97).toByte
+        case c if '2' <= c && c <= '7' => (c - 24).toByte
+      }: PartialFunction[Char, Byte]
+    )
 
   val base32Uppercase: PFnBijection[Byte, Char] =
-    base32DecimalAlphabet ++ uppercaseStartAlphabet
+    Bijection(
+      {
+        case i if 0 <= i && i <= 25  => (i + 65).toChar
+        case i if 26 <= i && i <= 31 => (i + 24).toChar
+      }: PartialFunction[Byte, Char],
+      {
+        case c if 'A' <= c && c <= 'Z' => (c - 65).toByte
+        case c if '2' <= c && c <= '7' => (c - 24).toByte
+      }: PartialFunction[Char, Byte]
+    )
 
   // Base64
 
-  private val base64Special: PFnBijection[Byte, Char] =
-    Bijection(
-      {
-        case 62 => '+'
-        case 63 => '/'
-      }: PartialFunction[Byte, Char],
-      {
-        case '+' => 62
-        case '/' => 63
-      }: PartialFunction[Char, Byte]
-    )
-
   val base64: PFnBijection[Byte, Char] =
-    base64Special ++ base64DecimalAlphabet ++ lowercaseMiddleAlphabet ++ uppercaseStartAlphabet
-
-  private val base64URLSafeSpecial: PFnBijection[Byte, Char] =
     Bijection(
       {
-        case 62 => '-'
-        case 63 => '_'
-      }: PartialFunction[Byte, Char],
+        case i if 0 <= i && i <= 25  => (i + 65).toChar
+        case i if 26 <= i && i <= 51 => (i + 71).toChar
+        case i if 52 <= i && i <= 61 => (i - 4).toChar
+        case 62                      => '+'
+        case 63                      => '/'
+      },
       {
-        case '-' => 62
-        case '_' => 63
-      }: PartialFunction[Char, Byte]
+        case c if 'A' <= c && c <= 'Z' => (c - 65).toByte
+        case c if 'a' <= c && c <= 'z' => (c - 71).toByte
+        case c if '0' <= c && c <= '9' => (c + 4).toByte
+        case '+'                       => 62
+        case '/'                       => 63
+      }
     )
 
   val base64URLSafe: PFnBijection[Byte, Char] =
-    base64URLSafeSpecial ++ base64DecimalAlphabet ++ lowercaseMiddleAlphabet ++ uppercaseStartAlphabet
+    Bijection(
+      {
+        case i if 0 <= i && i <= 25  => (i + 65).toChar
+        case i if 26 <= i && i <= 51 => (i + 71).toChar
+        case i if 52 <= i && i <= 61 => (i - 4).toChar
+        case 62                      => '-'
+        case 63                      => '_'
+      },
+      {
+        case c if 'A' <= c && c <= 'Z' => (c - 65).toByte
+        case c if 'a' <= c && c <= 'z' => (c - 71).toByte
+        case c if '0' <= c && c <= '9' => (c + 4).toByte
+        case '-'                       => 62
+        case '_'                       => 63
+      }
+    )
 end RFC4648Alphabets
