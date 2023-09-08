@@ -8,7 +8,7 @@ object Version {
 
   // Other
 
-  val scalatest          = "3.2.16"
+  val scalatest          = "3.2.17"
   val scalatestPlusCheck = scalatest + ".0"
 
   // Comparison / Benchmarking
