@@ -11,7 +11,7 @@ import dev.librecybernetics.data.GenericCodec.Error.UnrecognizedChar
 private val defaultCharset = Charset.defaultCharset()
 
 case class GenericCodec(
-    alphabet: PFnBijection[Byte, Char],
+    alphabet: FnBijection[Byte, Char],
     basePower: BasePower,
     padding: Option[Char]
 ):
@@ -25,7 +25,7 @@ case class GenericCodec(
 
     // Main content
     // NOTE: toBase(basePower) should always be encodable by the alphabet
-    val encoded = toBase(bytes, basePower).map(alphabet(_).get)
+    val encoded = toBase(bytes, basePower).map(alphabet(_))
     stringBuilder.appendAll(encoded)
 
     // Padding
@@ -68,13 +68,9 @@ case class GenericCodec(
 
     try
       val input = string
+        .toCharArray
         .dropRight(padLength)
-        .map { c =>
-          alphabet
-            .reverse(c)
-            .getOrElse(throw UnrecognizedChar(c))
-        }
-        .toArray
+        .map(alphabet.reverse(_))
       merr.pure(fromBase(input, basePower))
     catch case e: UnrecognizedChar => merr.raiseError(e)
     end try

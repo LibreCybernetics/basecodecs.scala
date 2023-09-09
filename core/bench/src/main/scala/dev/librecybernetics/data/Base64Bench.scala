@@ -12,3 +12,14 @@ class Base64Bench:
     val Right(decoded) = Base64.decode(encoded): @unchecked
     assert(decoded sameElements BaseNBench.data1k)
 end Base64Bench
+
+object Base64Bench:
+  private val profilerWait: Boolean = scala.sys.env.get("PROFILE").fold(false)(_ == "true")
+
+  @main
+  def main(): Unit =
+    if profilerWait then scala.io.StdIn.readLine("Waiting for the profiler to attach...")
+    val bench = new Base64Bench()
+    while true do bench.main()
+  end main
+end Base64Bench

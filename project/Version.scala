@@ -4,11 +4,11 @@ object Version {
 
   // LibreCybernetics
 
-  val bijection = "2023.9.0"
+  val bijection = "2023.9.1"
 
   // Other
 
-  val scalatest          = "3.2.16"
+  val scalatest          = "3.2.17"
   val scalatestPlusCheck = scalatest + ".0"
 
   // Comparison / Benchmarking

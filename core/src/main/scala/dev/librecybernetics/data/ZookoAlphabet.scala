@@ -1,7 +1,8 @@
 package dev.librecybernetics.data
 
 object ZookoAlphabet:
-  val zBase32: PFnBijection[Byte, Char] = {
+  @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
+  val zBase32: FnBijection[Byte, Char] = {
     val Right(mapBijection) = Bijection(
       0.toByte  -> 'y',
       1.toByte  -> 'b',
@@ -38,12 +39,8 @@ object ZookoAlphabet:
     ): @unchecked
 
     Bijection(
-      {
-        case byte if byte >= 0 && byte <= 31 => mapBijection(byte).get
-      }: PartialFunction[Byte, Char],
-      {
-        case char if mapBijection.reverse(char).isDefined => mapBijection.reverse(char).get
-      }: PartialFunction[Char, Byte]
+      { case byte if byte >= 0 && byte <= 31 => mapBijection(byte).get},
+      { case char if mapBijection.reverse(char).isDefined => mapBijection.reverse(char).get}
     )
   }
 end ZookoAlphabet
