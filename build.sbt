@@ -37,11 +37,13 @@ val sharedSettings = Seq(
     "-Ysafe-init",
     "-Xfatal-warnings"
   ),
-  resolvers    := Seq(
-    Resolver.mavenLocal,
-    "Jitpack" at "https://jitpack.io",
-    "GitHub Package Registry" at "https://maven.pkg.github.com/LibreCybernetics/basecodecs.scala"
-  ),
+  resolvers    :=
+    Resolver.sonatypeOssRepos("snapshots") ++
+      Seq(
+        Resolver.mavenLocal,
+        "Jitpack" at "https://jitpack.io",
+        "GitHub Package Registry" at "https://maven.pkg.github.com/LibreCybernetics/basecodecs.scala"
+      ),
   publishTo    := Some(
     "GitHub Package Registry" at "https://maven.pkg.github.com/LibreCybernetics/basecodecs.scala"
   ),
@@ -82,7 +84,7 @@ val `core-bench` =
     .settings(
       githubWorkflowArtifactUpload := false,
       libraryDependencies ++= Seq(
-        "commons-codec"          % "commons-codec" % Version.commonsCodec
+        "commons-codec" % "commons-codec" % Version.commonsCodec
       )
     )
     .enablePlugins(JmhPlugin)
@@ -90,7 +92,7 @@ val `core-bench` =
 val root: CrossProject =
   crossProject(JVMPlatform, NativePlatform, JSPlatform)
     .crossType(CrossType.Pure)
-    .in(file("."))
+    .in(file("fake"))
     .aggregate(core)
     .dependsOn(core)
     .enablePlugins(ScalaUnidocPlugin)
@@ -102,10 +104,7 @@ val root: CrossProject =
 
 // To avoid publishing the default root package
 val fakeRoot = (project in file("."))
-  .settings(
-    publish / skip  := true,
-    sourceDirectory := file("fake")
-  )
+  .settings(publish / skip := true)
   .aggregate(root.componentProjects.map(projectToRef)*)
 
 // CI/CD
