@@ -67,11 +67,11 @@ val core =
     .settings(
       name := "basecodecs-core",
       libraryDependencies ++= Seq(
-        "dev.librecybernetics.bijection~scala" %%% "bijection-core"       % Version.bijection,
-        "dev.librecybernetics.bijection~scala" %%% "bijection-scalacheck" % Version.bijection          % Test,
-        "org.scalatest"                        %%% "scalatest"            % Version.scalatest          % Test,
-        "org.scalatest"                        %%% "scalatest-wordspec"   % Version.scalatest          % Test,
-        "org.scalatestplus"                    %%% "scalacheck-1-17"      % Version.scalatestPlusCheck % Test
+        "dev.librecybernetics.bijection~scala" %%% "bijection-core"      % Version.bijection,
+        "dev.librecybernetics.bijection~scala" %%% "bijection-scalatest" % Version.bijection          % Test,
+        "org.scalatest"                        %%% "scalatest"           % Version.scalatest          % Test,
+        "org.scalatest"                        %%% "scalatest-wordspec"  % Version.scalatest          % Test,
+        "org.scalatestplus"                    %%% "scalacheck-1-17"     % Version.scalatestPlusCheck % Test
       )
     )
 

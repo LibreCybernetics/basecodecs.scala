@@ -7,55 +7,55 @@ import org.scalatestplus.scalacheck.Checkers.check
 
 class AlphabetSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
   "Multibase" should {
-    "base2" in check(MultibaseAlphabets.base2.check(using
+    "base2" in MultibaseAlphabets.base2.check(using
       Arbitrary(Gen.choose(0, 1)),
       Arbitrary(Gen.choose('0', '1'))
-    ))
-    "base8" in check(MultibaseAlphabets.base8.check(using
+    )
+    "base8" in MultibaseAlphabets.base8.check(using
       Arbitrary(Gen.choose(0, 7)),
       Arbitrary(Gen.choose('0', '7'))
-    ))
+    )
   }
 
   "RFC4648" should {
-    "base16LowerCase" in check(RFC4648Alphabets.base16Lowercase.check(using
+    "base16LowerCase" in RFC4648Alphabets.base16Lowercase.check(using
       Arbitrary(Gen.choose(0, 15)),
       Arbitrary(Gen.hexChar)
-    ))
-    "base16UpperCase" in check(RFC4648Alphabets.base16Uppercase.check(using
+    )
+    "base16UpperCase" in RFC4648Alphabets.base16Uppercase.check(using
         Arbitrary(Gen.choose(0, 15)),
         Arbitrary(Gen.hexChar)
-    ))
-    "base32HexLowerCase" in check(RFC4648Alphabets.base32HexLowercase.check(using
+    )
+    "base32HexLowerCase" in RFC4648Alphabets.base32HexLowercase.check(using
         Arbitrary(Gen.choose(0, 31)),
         Arbitrary(Gen.oneOf(Gen.numChar, Gen.alphaLowerChar))
-    ))
-    "base32HexUpperCase" in check(RFC4648Alphabets.base32HexUppercase.check(using
+    )
+    "base32HexUpperCase" in RFC4648Alphabets.base32HexUppercase.check(using
         Arbitrary(Gen.choose(0, 31)),
         Arbitrary(Gen.oneOf(Gen.numChar, Gen.alphaUpperChar))
-    ))
-    "base32LowerCase" in check(RFC4648Alphabets.base32Lowercase.check(using
+    )
+    "base32LowerCase" in RFC4648Alphabets.base32Lowercase.check(using
         Arbitrary(Gen.choose(0, 31)),
         Arbitrary(Gen.oneOf(Gen.numChar, Gen.alphaLowerChar))
-    ))
-    "base32UpperCase" in check(RFC4648Alphabets.base32Uppercase.check(using
+    )
+    "base32UpperCase" in RFC4648Alphabets.base32Uppercase.check(using
         Arbitrary(Gen.choose(0, 31)),
         Arbitrary(Gen.oneOf(Gen.numChar, Gen.alphaUpperChar))
-    ))
-    "base64" in check(RFC4648Alphabets.base64.check(using
+    )
+    "base64" in RFC4648Alphabets.base64.check(using
         Arbitrary(Gen.choose(0, 63)),
         Arbitrary(Gen.oneOf(Gen.numChar, Gen.alphaLowerChar, Gen.alphaUpperChar, Gen.oneOf('+', '/')))
-    ))
-    "base64Url" in check(RFC4648Alphabets.base64URLSafe.check(using
+    )
+    "base64Url" in RFC4648Alphabets.base64URLSafe.check(using
         Arbitrary(Gen.choose(0, 63)),
         Arbitrary(Gen.oneOf(Gen.numChar, Gen.alphaLowerChar, Gen.alphaUpperChar, Gen.oneOf('-', '_')))
-    ))
+    )
   }
 
   "Zooko" should {
-    "zBase32" in check(ZookoAlphabet.zBase32.check(using
+    "zBase32" in ZookoAlphabet.zBase32.check(using
         Arbitrary(Gen.choose(0, 31)),
         Arbitrary(Gen.oneOf(Gen.numChar, Gen.alphaLowerChar))
-    ))
+    )
   }
 end AlphabetSpec
