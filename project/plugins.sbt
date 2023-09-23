@@ -1,3 +1,5 @@
+resolvers ++= Resolver.sonatypeOssRepos("snapshots")
+
 ThisBuild / libraryDependencySchemes += "org.scala-native" % "sbt-scala-native" % "always"
 
 // CrossPlatform
@@ -17,7 +19,7 @@ addSbtPlugin("org.wartremover" % "sbt-wartremover" % "3.1.4")
 
 // Testing
 
-addSbtPlugin("io.stryker-mutator" % "sbt-stryker4s" % "0.14.3+347-15fb672d+20230914-1624-SNAPSHOT")
+addSbtPlugin("io.stryker-mutator" % "sbt-stryker4s" % "0.14.3+351-a715472e-SNAPSHOT")
 addSbtPlugin("org.scoverage"      % "sbt-scoverage" % "2.0.9")
 addSbtPlugin("pl.project13.scala" % "sbt-jmh"       % "0.4.6")
 

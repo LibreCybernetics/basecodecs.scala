@@ -38,12 +38,11 @@ val sharedSettings = Seq(
     "-Xfatal-warnings"
   ),
   resolvers    :=
-    Resolver.sonatypeOssRepos("snapshots") ++
-      Seq(
-        Resolver.mavenLocal,
-        "Jitpack" at "https://jitpack.io",
-        "GitHub Package Registry" at "https://maven.pkg.github.com/LibreCybernetics/basecodecs.scala"
-      ),
+    Seq(
+      Resolver.mavenLocal,
+      "Jitpack" at "https://jitpack.io",
+      "GitHub Package Registry" at "https://maven.pkg.github.com/LibreCybernetics/basecodecs.scala"
+    ),
   publishTo    := Some(
     "GitHub Package Registry" at "https://maven.pkg.github.com/LibreCybernetics/basecodecs.scala"
   ),
