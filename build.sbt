@@ -37,11 +37,12 @@ val sharedSettings = Seq(
     "-Ysafe-init",
     "-Xfatal-warnings"
   ),
-  resolvers    := Seq(
-    Resolver.mavenLocal,
-    "Jitpack" at "https://jitpack.io",
-    "GitHub Package Registry" at "https://maven.pkg.github.com/LibreCybernetics/basecodecs.scala"
-  ),
+  resolvers    :=
+    Seq(
+      Resolver.mavenLocal,
+      "Jitpack" at "https://jitpack.io",
+      "GitHub Package Registry" at "https://maven.pkg.github.com/LibreCybernetics/basecodecs.scala"
+    ),
   publishTo    := Some(
     "GitHub Package Registry" at "https://maven.pkg.github.com/LibreCybernetics/basecodecs.scala"
   ),
@@ -65,11 +66,11 @@ val core =
     .settings(
       name := "basecodecs-core",
       libraryDependencies ++= Seq(
-        "dev.librecybernetics.bijection~scala" %%% "bijection-core"       % Version.bijection,
-        "dev.librecybernetics.bijection~scala" %%% "bijection-scalacheck" % Version.bijection          % Test,
-        "org.scalatest"                        %%% "scalatest"            % Version.scalatest          % Test,
-        "org.scalatest"                        %%% "scalatest-wordspec"   % Version.scalatest          % Test,
-        "org.scalatestplus"                    %%% "scalacheck-1-17"      % Version.scalatestPlusCheck % Test
+        "dev.librecybernetics.bijection~scala" %%% "bijection-core"      % Version.bijection,
+        "dev.librecybernetics.bijection~scala" %%% "bijection-scalatest" % Version.bijection          % Test,
+        "org.scalatest"                        %%% "scalatest"           % Version.scalatest          % Test,
+        "org.scalatest"                        %%% "scalatest-wordspec"  % Version.scalatest          % Test,
+        "org.scalatestplus"                    %%% "scalacheck-1-17"     % Version.scalatestPlusCheck % Test
       )
     )
 
@@ -82,7 +83,7 @@ val `core-bench` =
     .settings(
       githubWorkflowArtifactUpload := false,
       libraryDependencies ++= Seq(
-        "commons-codec"          % "commons-codec" % Version.commonsCodec
+        "commons-codec" % "commons-codec" % Version.commonsCodec
       )
     )
     .enablePlugins(JmhPlugin)
@@ -90,7 +91,7 @@ val `core-bench` =
 val root: CrossProject =
   crossProject(JVMPlatform, NativePlatform, JSPlatform)
     .crossType(CrossType.Pure)
-    .in(file("."))
+    .in(file("fake"))
     .aggregate(core)
     .dependsOn(core)
     .enablePlugins(ScalaUnidocPlugin)
@@ -102,18 +103,16 @@ val root: CrossProject =
 
 // To avoid publishing the default root package
 val fakeRoot = (project in file("."))
-  .settings(
-    publish / skip  := true,
-    sourceDirectory := file("fake")
-  )
+  .settings(publish / skip := true)
   .aggregate(root.componentProjects.map(projectToRef)*)
 
 // CI/CD
 
+import JavaSpec.Distribution
+
 ThisBuild / githubWorkflowJavaVersions := Seq(
-  JavaSpec.temurin("11"),
-  JavaSpec.temurin("17"),
-  JavaSpec.temurin("20")
+  JavaSpec(Distribution.Zulu, "17"),
+  JavaSpec(Distribution.Zulu, "21"),
 )
 
 ThisBuild / githubWorkflowTargetTags :=
