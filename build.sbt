@@ -20,6 +20,8 @@ ThisBuild / scmInfo := Some(
 ThisBuild / versionScheme := Some("strict")
 ThisBuild / scalaVersion  := Version.scala
 
+resolvers ++= Resolver.sonatypeOssRepos("snapshots")
+
 val sharedSettings = Seq(
   scalaVersion := Version.scala,
   scalacOptions ++= Seq(
