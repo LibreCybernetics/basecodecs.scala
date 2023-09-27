@@ -1,6 +1,3 @@
-import sbt.Project.projectToRef
-import sbtcrossproject.CrossProject
-
 // Globals
 
 ThisBuild / organization := "dev.librecybernetics"
@@ -39,7 +36,7 @@ val sharedSettings = Seq(
     "-Ysafe-init",
     "-Xfatal-warnings"
   ),
-  resolvers    :=
+  resolvers    := Resolver.sonatypeOssRepos("snapshots") ++
     Seq(
       Resolver.mavenLocal,
       "Jitpack" at "https://jitpack.io",
@@ -61,9 +58,10 @@ val sharedSettings = Seq(
 ThisBuild / wartremoverErrors ++= Warts.unsafe
 
 val core =
-  crossProject(JVMPlatform, NativePlatform, JSPlatform)
-    .crossType(CrossType.Pure)
-    .in(file("core"))
+  (projectMatrix in file("core"))
+    .jsPlatform(scalaVersions = Seq(Version.scala))
+    .jvmPlatform(scalaVersions = Seq(Version.scala))
+    .nativePlatform(scalaVersions = Seq(Version.scala))
     .settings(sharedSettings)
     .settings(
       name := "basecodecs-core",
@@ -77,9 +75,10 @@ val core =
     )
 
 val `core-bench` =
-  crossProject(JVMPlatform)
-    .crossType(CrossType.Pure)
-    .in(file("core/bench"))
+  (projectMatrix in file("core/bench"))
+    .jsPlatform(scalaVersions = Seq(Version.scala))
+    .jvmPlatform(scalaVersions = Seq(Version.scala))
+    .nativePlatform(scalaVersions = Seq(Version.scala))
     .dependsOn(core)
     .settings(sharedSettings)
     .settings(
@@ -90,31 +89,33 @@ val `core-bench` =
     )
     .enablePlugins(JmhPlugin)
 
-val root: CrossProject =
-  crossProject(JVMPlatform, NativePlatform, JSPlatform)
-    .crossType(CrossType.Pure)
-    .in(file("fake"))
+val rootMatrix =
+  (projectMatrix in file("."))
+    .jsPlatform(scalaVersions = Seq(Version.scala))
+    .jvmPlatform(scalaVersions = Seq(Version.scala))
+    .nativePlatform(scalaVersions = Seq(Version.scala))
     .aggregate(core)
     .dependsOn(core)
-    .enablePlugins(ScalaUnidocPlugin)
     .settings(sharedSettings)
+    .settings(name := "basecodecs")
+    .enablePlugins(ScalaUnidocPlugin)
     .settings(
-      name                                       := "basecodecs",
       ScalaUnidoc / unidoc / unidocProjectFilter := inProjects(thisProject.value.aggregate*)
     )
 
-// To avoid publishing the default root package
-val fakeRoot = (project in file("."))
-  .settings(publish / skip := true)
-  .aggregate(root.componentProjects.map(projectToRef)*)
+val root =
+  (project in file("."))
+    .aggregate(rootMatrix.projectRefs*)
+    .settings(sharedSettings)
+    .settings(publish / skip := true)
 
 // CI/CD
 
-import JavaSpec.Distribution
+import JavaSpec.Distribution.Zulu
 
 ThisBuild / githubWorkflowJavaVersions := Seq(
-  JavaSpec(Distribution.Zulu, "17"),
-  JavaSpec(Distribution.Zulu, "21"),
+  JavaSpec(Zulu, "17"),
+  JavaSpec(Zulu, "21")
 )
 
 ThisBuild / githubWorkflowTargetTags :=
