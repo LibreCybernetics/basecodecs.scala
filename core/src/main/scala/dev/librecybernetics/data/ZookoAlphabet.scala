@@ -2,7 +2,7 @@ package dev.librecybernetics.data
 
 object ZookoAlphabet:
   @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
-  val zBase32: FnBijection[Byte, Char] = {
+  def zBase32: FnBijection[Byte, Char] = {
     val Right(mapBijection) = Bijection(
       0.toByte  -> 'y',
       1.toByte  -> 'b',
