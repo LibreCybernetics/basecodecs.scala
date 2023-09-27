@@ -22,7 +22,7 @@ class GenericBase2ConversionSpec extends AnyWordSpec with ScalaCheckPropertyChec
   end genericExample
 
   def fromTo(basePower: BasePower): Assertion =
-    forAll(randomByteArray(255)) { (input: Array[Byte]) =>
+    forAll(randomByteArray(255), MinSuccessful(10000)) { (input: Array[Byte]) =>
       val converted = toBase(input, basePower)
       val back      = fromBase(converted, basePower)
       input shouldBe back

@@ -15,7 +15,7 @@ def fromBase(
       val resultOffset = (offset * 6) / 8
 
       val in1 = input(offset)
-      val in2 = if (diff > 1) input(offset + 1) else 0.toByte
+      val in2 = input(offset + 1)
       val in3 = if (diff > 2) input(offset + 2) else 0.toByte
       val in4 = if (diff > 3) input(offset + 3) else 0.toByte
 

@@ -3,7 +3,7 @@ package dev.librecybernetics.data
 object RFC4648Alphabets:
   // Base16
 
-  val base16Lowercase: FnBijection[Byte, Char] =
+  def base16Lowercase: FnBijection[Byte, Char] =
     Bijection(
       {
         case i if 0 <= i && i <= 9   => (i + 48).toChar
@@ -15,7 +15,7 @@ object RFC4648Alphabets:
       }
     )
 
-  val base16Uppercase: FnBijection[Byte, Char] =
+  def base16Uppercase: FnBijection[Byte, Char] =
     Bijection(
       {
         case i if 0 <= i && i <= 9   => (i + 48).toChar
@@ -29,7 +29,7 @@ object RFC4648Alphabets:
 
   // Base32
 
-  val base32HexLowercase: FnBijection[Byte, Char] =
+  def base32HexLowercase: FnBijection[Byte, Char] =
     Bijection(
       {
         case i if 10 <= i && i <= 31 => (i + 87).toChar
@@ -41,7 +41,7 @@ object RFC4648Alphabets:
       }
     )
 
-  val base32HexUppercase: FnBijection[Byte, Char] =
+  def base32HexUppercase: FnBijection[Byte, Char] =
     Bijection(
       {
         case i if 10 <= i && i <= 31 => (i + 55).toChar
@@ -53,7 +53,7 @@ object RFC4648Alphabets:
       }
     )
 
-  val base32Lowercase: FnBijection[Byte, Char] =
+  def base32Lowercase: FnBijection[Byte, Char] =
     Bijection(
       {
         case i if 0 <= i && i <= 25  => (i + 97).toChar
@@ -65,7 +65,7 @@ object RFC4648Alphabets:
       }
     )
 
-  val base32Uppercase: FnBijection[Byte, Char] =
+  def base32Uppercase: FnBijection[Byte, Char] =
     Bijection(
       {
         case i if 0 <= i && i <= 25  => (i + 65).toChar
@@ -79,7 +79,7 @@ object RFC4648Alphabets:
 
   // Base64
 
-  val base64: FnBijection[Byte, Char] =
+  def base64: FnBijection[Byte, Char] =
     Bijection(
       {
         case i if 0 <= i && i <= 25  => (i + 65).toChar
@@ -97,7 +97,7 @@ object RFC4648Alphabets:
       }
     )
 
-  val base64URLSafe: FnBijection[Byte, Char] =
+  def base64URLSafe: FnBijection[Byte, Char] =
     Bijection(
       {
         case i if 0 <= i && i <= 25  => (i + 65).toChar
