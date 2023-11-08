@@ -67,8 +67,7 @@ case class GenericCodec(
     def padLength = string.reverseIterator.takeWhile(padding.contains).length
 
     try
-      val input = string
-        .toCharArray
+      val input = string.toCharArray
         .dropRight(padLength)
         .map(alphabet.reverse(_))
       merr.pure(fromBase(input, basePower))

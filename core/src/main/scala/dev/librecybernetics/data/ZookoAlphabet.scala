@@ -39,8 +39,8 @@ object ZookoAlphabet:
     ): @unchecked
 
     Bijection(
-      { case byte if byte >= 0 && byte <= 31 => mapBijection(byte).get},
-      { case char if mapBijection.reverse(char).isDefined => mapBijection.reverse(char).get}
+      { case byte if byte >= 0 && byte <= 31 => mapBijection(byte).get },
+      { case char if mapBijection.reverse(char).isDefined => mapBijection.reverse(char).get }
     )
   }
 end ZookoAlphabet

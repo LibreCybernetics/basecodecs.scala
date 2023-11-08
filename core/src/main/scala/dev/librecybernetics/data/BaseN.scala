@@ -13,7 +13,8 @@ object Base32HexUppercase extends GenericCodec(RFC4648Alphabets.base32HexUpperca
 object Base32Lowercase extends GenericCodec(RFC4648Alphabets.base32Lowercase, 5, Some('='))
 object Base32Uppercase extends GenericCodec(RFC4648Alphabets.base32Uppercase, 5, Some('='))
 
-object ZBase32 extends GenericCodec(ZookoAlphabet.zBase32, 5, None)
+object CrockfordBase32 extends GenericCodec(CrockfordAlphabet.crockfordBase32, 5, None)
+object ZBase32         extends GenericCodec(ZookoAlphabet.zBase32, 5, None)
 
 object Base64        extends GenericCodec(RFC4648Alphabets.base64, 6, Some('='))
 object Base64URLSafe extends GenericCodec(RFC4648Alphabets.base64URLSafe, 6, Some('='))
