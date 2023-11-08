@@ -7,7 +7,7 @@ import dev.librecybernetics.data.Base64ApacheBench.base64
 
 @State(Scope.Benchmark)
 object Base64ApacheBench:
-  val base64 = new Base64()
+  val base64: Base64 = Base64()
 end Base64ApacheBench
 
 class Base64ApacheBench:
