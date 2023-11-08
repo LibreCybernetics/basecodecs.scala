@@ -19,7 +19,7 @@ object Base64Bench:
   @main
   def main(): Unit =
     if profilerWait then scala.io.StdIn.readLine("Waiting for the profiler to attach...")
-    val bench = new Base64Bench()
+    val bench = Base64Bench()
     while true do bench.main()
   end main
 end Base64Bench
