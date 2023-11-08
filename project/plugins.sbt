@@ -27,4 +27,4 @@ addSbtPlugin("pl.project13.scala" % "sbt-jmh"       % "0.4.6")
 // CI/CD
 
 addSbtPlugin("com.github.sbt" % "sbt-ci-release"     % "1.5.12")
-addSbtPlugin("com.github.sbt" % "sbt-github-actions" % "0.16.0")
+addSbtPlugin("com.github.sbt" % "sbt-github-actions" % "0.19.0")
