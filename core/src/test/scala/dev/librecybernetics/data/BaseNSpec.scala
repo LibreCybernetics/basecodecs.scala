@@ -132,6 +132,16 @@ class BaseNSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
     "foobar" -> "Zm9vYmFy"
   )
 
+  "CrockfordBase32" in genericTest(CrockfordBase32)(
+    ""       -> "",
+    "f"      -> "CR",
+    "fo"     -> "CSQG",
+    "foo"    -> "CSQPY",
+    "foob"   -> "CSQPYRG",
+    "fooba"  -> "CSQPYRK1",
+    "foobar" -> "CSQPYRK1E8"
+  )
+
   "ZBase32" in genericTest(ZBase32)(
     ""       -> "",
     "f"      -> "ca",

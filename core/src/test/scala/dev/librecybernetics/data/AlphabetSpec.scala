@@ -106,7 +106,19 @@ class AlphabetSpec extends AnyWordSpec:
     }
   }
 
+  "Crockford" should {
+    "crockfordBase32" in CrockfordAlphabet.crockfordBase32.checkForward(MinSuccessful(1000), MaxDiscardedFactor(100.0))
+    "crockfordBase32 error" in {
+      a[MatchError] should be thrownBy CrockfordAlphabet.crockfordBase32.apply(-1)
+      a[MatchError] should be thrownBy CrockfordAlphabet.crockfordBase32.apply(32)
+    }
+  }
+
   "Zooko" should {
     "zBase32" in ZookoAlphabet.zBase32.check(MinSuccessful(1000), MaxDiscardedFactor(100.0))
+    "zBase32 error" in {
+      a[MatchError] should be thrownBy ZookoAlphabet.zBase32.apply(-1)
+      a[MatchError] should be thrownBy ZookoAlphabet.zBase32.apply(32)
+    }
   }
 end AlphabetSpec
