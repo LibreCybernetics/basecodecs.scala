@@ -19,9 +19,9 @@ def fromBase(
       val in3 = if (diff > 2) input(offset + 2) else 0.toByte
       val in4 = if (diff > 3) input(offset + 3) else 0.toByte
 
-      if (diff > 1)
-        val byte1 = ((in1 << 2) | ((in2 >> 4) & 0x03)).toByte
-        result.update(resultOffset, byte1)
+      val byte1 = ((in1 << 2) | ((in2 >> 4) & 0x03)).toByte
+      result.update(resultOffset, byte1)
+
       if (diff > 2)
         val byte2 = ((in2 << 4) | ((in3 >> 2) & 0x0f)).toByte
         result.update(resultOffset + 1, byte2)
