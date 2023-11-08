@@ -4,7 +4,7 @@ object Version {
 
   // LibreCybernetics
 
-  val bijection = "2023.9.4"
+  val bijection = "2023.11.0"
 
   // Other
 
