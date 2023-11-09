@@ -1,6 +1,8 @@
-package dev.librecybernetics.data
+package dev.librecybernetics.data.alphabet
 
-object MultibaseAlphabets:
+import dev.librecybernetics.data.{Bijection, FnBijection}
+
+object Multibase:
   // Base2
 
   def base2: FnBijection[Byte, Char] =
@@ -16,4 +18,4 @@ object MultibaseAlphabets:
       { case i if 0 <= i && i <= 7 => (i + 48).toChar },
       { case c if '0' <= c && c <= '7' => (c - 48).toByte }
     )
-end MultibaseAlphabets
+end Multibase

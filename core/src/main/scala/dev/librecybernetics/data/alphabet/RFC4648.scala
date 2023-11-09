@@ -1,6 +1,8 @@
-package dev.librecybernetics.data
+package dev.librecybernetics.data.alphabet
 
-object RFC4648Alphabets:
+import dev.librecybernetics.data.{Bijection, FnBijection}
+
+object RFC4648:
   // Base16
 
   def base16Lowercase: FnBijection[Byte, Char] =
@@ -114,4 +116,4 @@ object RFC4648Alphabets:
         case '_'                       => 63
       }
     )
-end RFC4648Alphabets
+end RFC4648

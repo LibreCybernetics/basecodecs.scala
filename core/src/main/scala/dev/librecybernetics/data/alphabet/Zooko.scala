@@ -1,8 +1,10 @@
-package dev.librecybernetics.data
+package dev.librecybernetics.data.alphabet
 
-object ZookoAlphabet:
+import dev.librecybernetics.data.{Bijection, FnBijection}
+
+object Zooko:
   @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
-  def zBase32: FnBijection[Byte, Char] = {
+  def base32: FnBijection[Byte, Char] = {
     val Right(mapBijection) = Bijection(
       0.toByte  -> 'y',
       1.toByte  -> 'b',
@@ -43,4 +45,4 @@ object ZookoAlphabet:
       { case char if mapBijection.reverse(char).isDefined => mapBijection.reverse(char).get }
     )
   }
-end ZookoAlphabet
+end Zooko

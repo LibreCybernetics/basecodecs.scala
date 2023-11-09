@@ -10,7 +10,7 @@ import dev.librecybernetics.data.GenericCodec.Error.UnrecognizedChar
 
 private val defaultCharset = Charset.defaultCharset()
 
-case class GenericCodec(
+private[data] case class GenericCodec(
     alphabet: FnBijection[Byte, Char],
     basePower: BasePower,
     padding: Option[Char]
