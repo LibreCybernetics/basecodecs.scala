@@ -15,8 +15,19 @@ object Base32HexUppercase extends GenericCodec(RFC4648.base32HexUppercase, 5, So
 object Base32Lowercase extends GenericCodec(RFC4648.base32Lowercase, 5, Some('='))
 object Base32Uppercase extends GenericCodec(RFC4648.base32Uppercase, 5, Some('='))
 
+/** Crockford's Base32 encoding.
+  *
+  * NOTICE: Decoding is case-insensitive and includes almost-homoglyphs / visually-similar characters.
+  *
+  * Reference: [[https://www.crockford.com/base32.html]]
+  */
 object CrockfordBase32 extends GenericCodec(Crockford.base32, 5, None)
-object ZBase32         extends GenericCodec(Zooko.base32, 5, None)
+
+/** Zooko's Base32 or zBase32
+  *
+  * Reference: [[https://philzimmermann.com/docs/human-oriented-base-32-encoding.txt]]
+  */
+object ZBase32 extends GenericCodec(Zooko.base32, 5, None)
 
 object Base64        extends GenericCodec(RFC4648.base64, 6, Some('='))
 object Base64URLSafe extends GenericCodec(RFC4648.base64URLSafe, 6, Some('='))

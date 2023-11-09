@@ -3,6 +3,10 @@ package dev.librecybernetics.data.alphabet
 import dev.librecybernetics.data.{Bijection, FnBijection}
 
 object Zooko:
+  /** Zooko's Base32 or zBase32
+   *
+   * Reference: [[https://philzimmermann.com/docs/human-oriented-base-32-encoding.txt]]
+   */
   @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
   def base32: FnBijection[Byte, Char] = {
     val Right(mapBijection) = Bijection(
