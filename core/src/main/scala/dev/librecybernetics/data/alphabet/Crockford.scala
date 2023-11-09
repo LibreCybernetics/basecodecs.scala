@@ -1,7 +1,15 @@
-package dev.librecybernetics.data
+package dev.librecybernetics.data.alphabet
 
-object CrockfordAlphabet:
-  val crockfordBase32: FnBijection[Byte, Char] = Bijection(
+import dev.librecybernetics.data.{Bijection, FnBijection}
+
+object Crockford:
+  /** Crockford's Base32 encoding.
+   *
+   * NOTICE: Decoding is case-insensitive and includes almost-homoglyphs / visually-similar characters.
+   *
+   * Reference: [[https://www.crockford.com/base32.html]]
+   */
+  val base32: FnBijection[Byte, Char] = Bijection(
     {
       case 0  => '0'
       case 1  => '1'
@@ -72,4 +80,4 @@ object CrockfordAlphabet:
       case 'Z' => 31
     }
   )
-end CrockfordAlphabet
+end Crockford
