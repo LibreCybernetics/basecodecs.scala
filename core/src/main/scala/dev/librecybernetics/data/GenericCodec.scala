@@ -6,7 +6,7 @@ import scala.util.Try
 import cats.ApplicativeError
 import cats.syntax.all.*
 
-import dev.librecybernetics.data.GenericCodec.Error.UnrecognizedChar
+import dev.librecybernetics.data.CodecError.UnrecognizedChar
 
 private val defaultCharset = Charset.defaultCharset()
 
@@ -60,9 +60,9 @@ private[data] case class GenericCodec(
 
   @SuppressWarnings(Array("org.wartremover.warts.Throw"))
   def decode[
-      F[_]: [F[_]] =>> ApplicativeError[F, GenericCodec.Error]
+      F[_]: [F[_]] =>> ApplicativeError[F, CodecError]
   ](string: String): F[Array[Byte]] =
-    val merr: ApplicativeError[F, GenericCodec.Error] = implicitly
+    val merr: ApplicativeError[F, CodecError] = implicitly
 
     def padLength = string.reverseIterator.takeWhile(padding.contains).length
 
@@ -75,18 +75,12 @@ private[data] case class GenericCodec(
     end try
 
   inline def decode[
-      F[_]: [F[_]] =>> ApplicativeError[F, GenericCodec.Error]
+      F[_]: [F[_]] =>> ApplicativeError[F, CodecError]
   ](string: String, charset: Charset): F[String] =
     decode(string).map(String(_, charset))
 
   inline def decodeUTF8[
-      F[_]: [F[_]] =>> ApplicativeError[F, GenericCodec.Error]
+      F[_]: [F[_]] =>> ApplicativeError[F, CodecError]
   ](string: String): F[String] =
     decode(string, StandardCharsets.UTF_8)
-end GenericCodec
-
-object GenericCodec:
-  enum Error extends Throwable:
-    case UnrecognizedChar(char: Char)
-  end Error
 end GenericCodec
