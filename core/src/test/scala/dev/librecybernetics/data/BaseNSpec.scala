@@ -24,9 +24,18 @@ class BaseNSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
       end match
     }
 
+    // Property-check on arbitrary byte arrays
     forAll(randomByteArray(255), MinSuccessful(10000)) { input =>
       val encoded        = codec.encode(input)
       val Right(decoded) = codec.decode(encoded): @unchecked
+
+      decoded shouldBe input
+    }
+
+    // Property-check on arbitrary strings
+    forAll(MinSuccessful(10000)) { (input: String) =>
+      val encoded        = codec.encode(input)
+      val Right(decoded) = codec.decodeUTF8(encoded): @unchecked
 
       decoded shouldBe input
     }
