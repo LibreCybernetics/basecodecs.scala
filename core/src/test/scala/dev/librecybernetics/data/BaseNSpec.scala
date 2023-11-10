@@ -6,6 +6,8 @@ import org.scalatest.prop.TableDrivenPropertyChecks.Table
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
+import dev.librecybernetics.data.codec.{Base16Lowercase, Base16Uppercase, Base2, Base32HexLowercase, Base32HexUppercase, Base32Lowercase, Base32Uppercase, Base64, Base64URLSafe, Base8, CrockfordBase32, GenericCodec, ZBase32}
+
 /**
  * - Test cases related to foobar were taken from RFC4648§10 (https://tools.ietf.org/html/rfc4648)
  * - Test cases related to {incrementing,decrementing}ByteArray were checked against https://cryptii.com/ (Except base8)

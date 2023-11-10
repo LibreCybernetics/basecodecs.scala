@@ -7,6 +7,8 @@ import org.scalatest.prop.TableDrivenPropertyChecks.Table
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
+import dev.librecybernetics.data.util.*
+
 class GenericBase2ConversionSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
   def genericExample(input: String, expected: Map[BasePower, Array[Byte]]): Assertion =
     genericExample(input.getBytes, expected)

@@ -1,4 +1,4 @@
-package dev.librecybernetics.data
+package dev.librecybernetics.data.codec
 
 import java.nio.charset.{Charset, StandardCharsets}
 import scala.util.Try
@@ -7,8 +7,8 @@ import cats.ApplicativeError
 import cats.syntax.all.*
 
 import dev.librecybernetics.data.CodecError.UnrecognizedChar
-
-private val defaultCharset = Charset.defaultCharset()
+import dev.librecybernetics.data.{CodecError, FnBijection}
+import dev.librecybernetics.data.util.*
 
 private[data] case class GenericCodec(
     alphabet: FnBijection[Byte, Char],

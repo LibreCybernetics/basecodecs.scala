@@ -5,6 +5,8 @@ import scala.concurrent.duration.Duration
 
 import org.openjdk.jmh.annotations.Benchmark
 
+import dev.librecybernetics.data.codec.Base64
+
 class Base64Bench:
   @Benchmark
   def main(): Unit =

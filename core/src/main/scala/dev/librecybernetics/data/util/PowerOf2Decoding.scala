@@ -1,4 +1,4 @@
-package dev.librecybernetics.data
+package dev.librecybernetics.data.util
 
 import scala.annotation.tailrec
 
