@@ -9,7 +9,7 @@ trait Codec:
   def encode(bytes: Array[Byte]): String
 
   def decode[
-    F[_] : [F[_]] =>> ApplicativeError[F, CodecError]
+      F[_]: [F[_]] =>> ApplicativeError[F, CodecError]
   ](string: String): F[Array[Byte]]
 end Codec
 
@@ -26,17 +26,17 @@ object Codec:
     inline def encode(input: Array[Byte] | String): String =
       input match
         case bytes: Array[Byte] => codec.encode(bytes)
-        case string: String => codec.encode(string)
+        case string: String     => codec.encode(string)
       end match
     end encode
 
     inline def decodeString[
-      F[_] : [F[_]] =>> ApplicativeError[F, CodecError]
+        F[_]: [F[_]] =>> ApplicativeError[F, CodecError]
     ](string: String, charset: Charset): F[String] =
       codec.decode(string).map(String(_, charset))
 
     inline def decodeString[
-      F[_] : [F[_]] =>> ApplicativeError[F, CodecError]
+        F[_]: [F[_]] =>> ApplicativeError[F, CodecError]
     ](string: String): F[String] =
       codec.decodeString(string, defaultCharset)
   end extension

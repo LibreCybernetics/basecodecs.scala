@@ -6,12 +6,26 @@ import org.scalatest.prop.TableDrivenPropertyChecks.Table
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-import dev.librecybernetics.data.codec.{Base16Lowercase, Base16Uppercase, Base2, Base32HexLowercase, Base32HexUppercase, Base32Lowercase, Base32Uppercase, Base64, Base64URLSafe, Base8, CrockfordBase32, GenericCodec, ZBase32}
+import dev.librecybernetics.data.codec.{
+  Base16Lowercase,
+  Base16Uppercase,
+  Base2,
+  Base32HexLowercase,
+  Base32HexUppercase,
+  Base32Lowercase,
+  Base32Uppercase,
+  Base64,
+  Base64URLSafe,
+  Base8,
+  CrockfordBase32,
+  GenericCodec,
+  ZBase32
+}
 
-/**
- * - Test cases related to foobar were taken from RFC4648§10 (https://tools.ietf.org/html/rfc4648)
- * - Test cases related to {incrementing,decrementing}ByteArray were checked against https://cryptii.com/ (Except base8)
- */
+/**   - Test cases related to foobar were taken from RFC4648§10 (https://tools.ietf.org/html/rfc4648)
+  *   - Test cases related to {incrementing,decrementing}ByteArray were checked against https://cryptii.com/ (Except
+  *     base8)
+  */
 class BaseNSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
   private val incrementingByteArray: Array[Byte] = Array[Byte](
     0x01,
@@ -79,7 +93,7 @@ class BaseNSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
     "foobar" -> "011001100110111101101111011000100110000101110010",
 
     // Byte arrays
-    Array[Byte](0x0)     -> "00000000",
+    Array[Byte](0x0)      -> "00000000",
     incrementingByteArray -> "0000000100100011010001010110011110001001101010111100110111101111",
     decrementingByteArray -> "1111111011011100101110101001100001110110010101000011001000010000"
   )
@@ -95,7 +109,7 @@ class BaseNSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
     "foobar" -> "3146755730460562==",
 
     // Byte arrays
-    Array[Byte](0x0)     -> "000",
+    Array[Byte](0x0)      -> "000",
     incrementingByteArray -> "0022150531704653633674==",
     decrementingByteArray -> "7755627246073124144100=="
   )
@@ -111,7 +125,7 @@ class BaseNSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
     "foobar" -> "666f6f626172",
 
     // Byte arrays
-    Array[Byte](0x0)     -> "00",
+    Array[Byte](0x0)      -> "00",
     incrementingByteArray -> "0123456789abcdef",
     decrementingByteArray -> "fedcba9876543210"
   )
@@ -127,7 +141,7 @@ class BaseNSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
     "foobar" -> "666F6F626172",
 
     // Byte arrays
-    Array[Byte](0x0)     -> "00",
+    Array[Byte](0x0)      -> "00",
     incrementingByteArray -> "0123456789ABCDEF",
     decrementingByteArray -> "FEDCBA9876543210"
   )
@@ -143,7 +157,7 @@ class BaseNSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
     "foobar" -> "cpnmuoj1e8======",
 
     // Byte arrays
-    Array[Byte](0x0)     -> "00======",
+    Array[Byte](0x0)      -> "00======",
     incrementingByteArray -> "04hkaps9lf6uu===",
     decrementingByteArray -> "vrebl63magp10==="
   )
@@ -159,7 +173,7 @@ class BaseNSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
     "foobar" -> "CPNMUOJ1E8======",
 
     // Byte arrays
-    Array[Byte](0x0)     -> "00======",
+    Array[Byte](0x0)      -> "00======",
     incrementingByteArray -> "04HKAPS9LF6UU===",
     decrementingByteArray -> "VREBL63MAGP10==="
   )
@@ -175,7 +189,7 @@ class BaseNSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
     "foobar" -> "mzxw6ytboi======",
 
     // Byte arrays
-    Array[Byte](0x0)     -> "aa======",
+    Array[Byte](0x0)      -> "aa======",
     incrementingByteArray -> "aerukz4jvpg66===",
     decrementingByteArray -> "73olvgdwkqzba==="
   )
@@ -191,7 +205,7 @@ class BaseNSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
     "foobar" -> "MZXW6YTBOI======",
 
     // Byte arrays
-    Array[Byte](0x0)     -> "AA======",
+    Array[Byte](0x0)      -> "AA======",
     incrementingByteArray -> "AERUKZ4JVPG66===",
     decrementingByteArray -> "73OLVGDWKQZBA==="
   )
@@ -207,7 +221,7 @@ class BaseNSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
     "foobar" -> "Zm9vYmFy",
 
     // Byte arrays
-    Array[Byte](0x0)     -> "AA==",
+    Array[Byte](0x0)      -> "AA==",
     incrementingByteArray -> "ASNFZ4mrze8=",
     decrementingByteArray -> "/ty6mHZUMhA="
   )
@@ -223,7 +237,7 @@ class BaseNSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
     "foobar" -> "Zm9vYmFy",
 
     // Byte arrays
-    Array[Byte](0x0)     -> "AA==",
+    Array[Byte](0x0)      -> "AA==",
     incrementingByteArray -> "ASNFZ4mrze8=",
     decrementingByteArray -> "_ty6mHZUMhA="
   )
@@ -239,7 +253,7 @@ class BaseNSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
     "foobar" -> "CSQPYRK1E8",
 
     // Byte arrays
-    Array[Byte](0x0)     -> "00",
+    Array[Byte](0x0)      -> "00",
     incrementingByteArray -> "04HMASW9NF6YY",
     decrementingByteArray -> "ZVEBN63PAGS10"
   )
@@ -255,7 +269,7 @@ class BaseNSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
     "foobar" -> "c3zs6aubqe",
 
     // Byte arrays
-    Array[Byte](0x0)     -> "yy",
+    Array[Byte](0x0)      -> "yy",
     incrementingByteArray -> "yrtwk3hjixg66",
     decrementingByteArray -> "95qmigdsko3by"
   )

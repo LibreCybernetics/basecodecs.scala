@@ -37,7 +37,6 @@ private[data] case class GenericCodec(
     stringBuilder.toString()
   end encode
 
-
   //////////////
   // Decoding //
   //////////////

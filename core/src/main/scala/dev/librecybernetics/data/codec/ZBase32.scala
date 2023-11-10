@@ -7,6 +7,3 @@ import dev.librecybernetics.data.alphabet.Zooko
   * Reference: [[https://philzimmermann.com/docs/human-oriented-base-32-encoding.txt]]
   */
 object ZBase32 extends GenericCodec(Zooko.base32, 5, None)
-
-
-

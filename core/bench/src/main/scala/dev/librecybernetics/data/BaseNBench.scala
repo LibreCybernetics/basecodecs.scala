@@ -6,7 +6,16 @@ import scala.util.Random
 
 import org.openjdk.jmh.annotations.*
 
-import dev.librecybernetics.data.codec.{Base16Lowercase, Base16Uppercase, Base32HexLowercase, Base32HexUppercase, Base32Lowercase, Base32Uppercase, Base64, Base64URLSafe}
+import dev.librecybernetics.data.codec.{
+  Base16Lowercase,
+  Base16Uppercase,
+  Base32HexLowercase,
+  Base32HexUppercase,
+  Base32Lowercase,
+  Base32Uppercase,
+  Base64,
+  Base64URLSafe
+}
 
 @State(Scope.Benchmark)
 object BaseNBench:
