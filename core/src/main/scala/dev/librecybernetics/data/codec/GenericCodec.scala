@@ -74,13 +74,13 @@ private[data] case class GenericCodec(
     catch case e: UnrecognizedChar => merr.raiseError(e)
     end try
 
-  inline def decode[
+  inline def decodeString[
       F[_]: [F[_]] =>> ApplicativeError[F, CodecError]
   ](string: String, charset: Charset): F[String] =
     decode(string).map(String(_, charset))
 
-  inline def decodeUTF8[
-      F[_]: [F[_]] =>> ApplicativeError[F, CodecError]
+  inline def decodeString[
+    F[_]: [F[_]] =>> ApplicativeError[F, CodecError]
   ](string: String): F[String] =
-    decode(string, StandardCharsets.UTF_8)
+    decodeString(string, defaultCharset)
 end GenericCodec
