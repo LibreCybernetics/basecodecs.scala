@@ -9,7 +9,7 @@ object Base2:
 
   // Encoding
   given Conversion[Array[Byte], Base2] = codec.Base2.encode(_)
-  given Conversion[String, Base2] = codec.Base2.encode(_)
+  given Conversion[String, Base2] = Codec.encode(codec.Base2)(_)
 
   // Decoding
   // NOTE: Due to the opaque type construction, we know decoding won't fail.
