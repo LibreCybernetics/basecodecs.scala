@@ -1,4 +1,4 @@
-package dev.librecybernetics.data
+package dev.librecybernetics.data.codec
 
 import java.nio.charset.{Charset, StandardCharsets}
 import scala.util.Try
@@ -7,18 +7,14 @@ import cats.ApplicativeError
 import cats.syntax.all.*
 
 import dev.librecybernetics.data.CodecError.UnrecognizedChar
-
-private val defaultCharset = Charset.defaultCharset()
+import dev.librecybernetics.data.{Codec, CodecError, FnBijection}
+import dev.librecybernetics.data.util.*
 
 private[data] case class GenericCodec(
     alphabet: FnBijection[Byte, Char],
     basePower: BasePower,
     padding: Option[Char]
-):
-  //////////////
-  // Encoding //
-  //////////////
-
+) extends Codec:
   @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
   def encode(bytes: Array[Byte]): String =
     val stringBuilder = StringBuilder()
@@ -41,19 +37,6 @@ private[data] case class GenericCodec(
     stringBuilder.toString()
   end encode
 
-  inline def encode(string: String, charset: Charset): String =
-    encode(string.getBytes(charset))
-
-  inline def encode(string: String): String =
-    encode(string, defaultCharset)
-
-  inline def encode(input: Array[Byte] | String): String =
-    input match
-      case bytes: Array[Byte] => encode(bytes)
-      case string: String     => encode(string)
-    end match
-  end encode
-
   //////////////
   // Decoding //
   //////////////
@@ -73,14 +56,4 @@ private[data] case class GenericCodec(
       merr.pure(fromBase(input, basePower))
     catch case e: UnrecognizedChar => merr.raiseError(e)
     end try
-
-  inline def decode[
-      F[_]: [F[_]] =>> ApplicativeError[F, CodecError]
-  ](string: String, charset: Charset): F[String] =
-    decode(string).map(String(_, charset))
-
-  inline def decodeUTF8[
-      F[_]: [F[_]] =>> ApplicativeError[F, CodecError]
-  ](string: String): F[String] =
-    decode(string, StandardCharsets.UTF_8)
 end GenericCodec

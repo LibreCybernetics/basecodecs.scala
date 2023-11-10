@@ -1,4 +1,4 @@
-package dev.librecybernetics.data
+package dev.librecybernetics.data.util
 
 private[librecybernetics] type BasePower = 1 | 3 | 4 | 5 | 6
 
