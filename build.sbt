@@ -1,3 +1,5 @@
+import scala.sys.process.Process
+
 // Globals
 
 ThisBuild / organization := "dev.librecybernetics"
@@ -89,6 +91,45 @@ val `core-bench` =
     )
     .enablePlugins(JmhPlugin)
 
+val npmInstall = taskKey[Unit]("Install npm dependencies")
+val distJS = taskKey[Unit]("Copy the JS to the webapp")
+val buildPage = taskKey[Unit]("Build the HTML page")
+val devPage = taskKey[Unit]("Vite the HTML page")
+
+val webapp =
+  (project in file("webapp"))
+    .dependsOn(core.js(Version.scala))
+    .enablePlugins(ScalaJSPlugin)
+    .settings(sharedSettings)
+    .settings(
+      name := "basecodecs-webapp",
+      libraryDependencies ++= Seq(
+        "com.raquo" %%% "laminar" % Version.laminar
+      ),
+      githubWorkflowArtifactUpload := false,
+      scalaJSUseMainModuleInitializer := true,
+      npmInstall := {
+        val installResult = Process("npm install", cwd = baseDirectory.value).!
+        if (installResult != 0) throw new Exception("Failed to install npm dependencies")
+      },
+      distJS := {
+        (Compile / fullLinkJS).value
+        IO.copyFile((Compile / fullLinkJSOutput).value / "main.js", baseDirectory.value / "main.js")
+        IO.copyFile((Compile / fullLinkJSOutput).value / "main.js.map", baseDirectory.value / "main.js.map")
+      },
+      buildPage := {
+        distJS.value
+        npmInstall.value
+        val buildResult = Process("npm run build", cwd = baseDirectory.value).!
+        if (buildResult != 0) throw new Exception("Failed to build webapp")
+      },
+      devPage := {
+        distJS.value
+        npmInstall.value
+        Process("npm run dev", cwd = baseDirectory.value).!
+      }
+    )
+
 val rootMatrix =
   (projectMatrix in file("."))
     .jsPlatform(scalaVersions = Seq(Version.scala))
@@ -111,7 +152,9 @@ val root =
 
 // CI/CD
 
-import JavaSpec.Distribution.Zulu
+import scala.sys.process.Process
+
+import sbtghactions.GenerativePlugin.autoImport.JavaSpec.Distribution.Zulu
 
 ThisBuild / githubWorkflowJavaVersions := Seq(
   JavaSpec(Zulu, "17"),
