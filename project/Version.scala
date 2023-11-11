@@ -8,6 +8,7 @@ object Version {
 
   // Other
 
+  val laminar            = "16.0.0"
   val scalatest          = "3.2.17"
   val scalatestPlusCheck = scalatest + ".0"
 

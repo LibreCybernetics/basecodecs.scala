@@ -3,5 +3,12 @@
 .js/
 .jvm/
 .native/
+
+dist/
+node_modules/
 project/
 target/
+
+*.js
+*.js.map
+package-lock.json
