@@ -15,7 +15,6 @@ private[data] case class GenericCodec(
     basePower: BasePower,
     padding: Option[Char]
 ) extends Codec:
-  @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
   def encode(bytes: Array[Byte]): String =
     val stringBuilder = StringBuilder()
 
@@ -41,7 +40,6 @@ private[data] case class GenericCodec(
   // Decoding //
   //////////////
 
-  @SuppressWarnings(Array("org.wartremover.warts.Throw"))
   def decode[
       F[_]: [F[_]] =>> ApplicativeError[F, CodecError]
   ](string: String): F[Array[Byte]] =
