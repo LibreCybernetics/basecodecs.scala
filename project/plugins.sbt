@@ -21,7 +21,7 @@ addSbtPlugin("org.wartremover" % "sbt-wartremover" % "3.1.6")
 addSbtPlugin("io.stryker-mutator" % "sbt-stryker4s" % "0.15.2")
 
 addSbtPlugin("org.scoverage"      % "sbt-scoverage" % "2.0.9")
-addSbtPlugin("pl.project13.scala" % "sbt-jmh"       % "0.4.6")
+addSbtPlugin("pl.project13.scala" % "sbt-jmh"       % "0.4.7")
 
 // CI/CD
 
