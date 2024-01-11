@@ -92,9 +92,9 @@ val `core-bench` =
     .enablePlugins(JmhPlugin)
 
 val npmInstall = taskKey[Unit]("Install npm dependencies")
-val distJS = taskKey[Unit]("Copy the JS to the webapp")
-val buildPage = taskKey[Unit]("Build the HTML page")
-val devPage = taskKey[Unit]("Vite the HTML page")
+val distJS     = taskKey[Unit]("Copy the JS to the webapp")
+val buildPage  = taskKey[Unit]("Build the HTML page")
+val devPage    = taskKey[Unit]("Vite the HTML page")
 
 val webapp =
   (project in file("webapp"))
@@ -102,28 +102,28 @@ val webapp =
     .enablePlugins(ScalaJSPlugin)
     .settings(sharedSettings)
     .settings(
-      name := "basecodecs-webapp",
+      name                            := "basecodecs-webapp",
       libraryDependencies ++= Seq(
         "com.raquo" %%% "laminar" % Version.laminar
       ),
-      githubWorkflowArtifactUpload := false,
+      githubWorkflowArtifactUpload    := false,
       scalaJSUseMainModuleInitializer := true,
-      npmInstall := {
+      npmInstall                      := {
         val installResult = Process("npm install", cwd = baseDirectory.value).!
         if (installResult != 0) throw new Exception("Failed to install npm dependencies")
       },
-      distJS := {
+      distJS                          := {
         (Compile / fullLinkJS).value
         IO.copyFile((Compile / fullLinkJSOutput).value / "main.js", baseDirectory.value / "main.js")
         IO.copyFile((Compile / fullLinkJSOutput).value / "main.js.map", baseDirectory.value / "main.js.map")
       },
-      buildPage := {
+      buildPage                       := {
         distJS.value
         npmInstall.value
         val buildResult = Process("npm run build", cwd = baseDirectory.value).!
         if (buildResult != 0) throw new Exception("Failed to build webapp")
       },
-      devPage := {
+      devPage                         := {
         distJS.value
         npmInstall.value
         Process("npm run dev", cwd = baseDirectory.value).!

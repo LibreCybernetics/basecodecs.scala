@@ -1,13 +1,16 @@
 package dev.librecybernetics.data.util
 
+import dev.librecybernetics.data.FnBijection
+
 import scala.annotation.tailrec
 
 def toBase(
     input: Array[Byte],
-    basePower: BasePower
-): Array[Byte] =
+    basePower: BasePower,
+    alphabet: FnBijection[Byte, Char]
+): Array[Char] =
   val bits   = input.length * 8
-  val result = Array.ofDim[Byte](bits / basePower + (if (bits % basePower == 0) 0 else 1))
+  val result = Array.ofDim[Char](bits / basePower + (if (bits % basePower == 0) 0 else 1))
 
   @tailrec
   def toBasePartialBase6(offset: Int): Unit =
@@ -20,14 +23,14 @@ def toBase(
 
       val out1 = ((byte1 >> 2) & 0x3f).toByte
       val out2 = (((byte1 & 0x03) << 4) | ((byte2 >> 4) & 0x0f)).toByte
-      result.update(offset, out1)
-      result.update(offset + 1, out2)
+      result.update(offset, alphabet(out1))
+      result.update(offset + 1, alphabet(out2))
       if (diff > 1)
         val out3 = (((byte2 & 0x0f) << 2) | ((byte3 >> 6) & 0x03)).toByte
-        result.update(offset + 2, out3)
+        result.update(offset + 2, alphabet(out3))
       if (diff > 2)
         val out4 = (byte3 & 0x3f).toByte
-        result.update(offset + 3, out4)
+        result.update(offset + 3, alphabet(out4))
 
       // Recurse
       toBasePartialBase6(offset + 4)
@@ -47,7 +50,7 @@ def toBase(
           ((byte2Short(currentByte) >> (remainingBits - basePower)) & mask(basePower)).toByte
 
         // Mutate
-        result.update(offset, bits)
+        result.update(offset, alphabet(bits))
         toBasePartial(offset + 1)
       } else {
         val currentBits =
@@ -60,7 +63,7 @@ def toBase(
         val bits = (currentBits | nextBits).toByte
 
         // Mutate
-        result.update(offset, bits)
+        result.update(offset, alphabet(bits))
         toBasePartial(offset + 1)
       }
     }

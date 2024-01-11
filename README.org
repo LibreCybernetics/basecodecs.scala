@@ -25,5 +25,5 @@ https://github.com/scoverage/sbt-scoverage
 
 https://stryker-mutator.io/docs/stryker4s/getting-started/
 
-140,000 base64 encode/decode of 1KB per second on a single Zen 4 core with
+200,000 base64 encode/decode of 1KB per second on a single Zen 4 core with
 `sbt "core-bench3/Jmh/run dev.librecybernetics.data.Base64Bench"`

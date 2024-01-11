@@ -1,8 +1,10 @@
 .bsp/
+.direnv/
 .idea/
 .js/
 .jvm/
 .native/
+.sbt/
 
 dist/
 node_modules/

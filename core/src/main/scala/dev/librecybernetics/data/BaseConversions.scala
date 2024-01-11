@@ -14,5 +14,5 @@ trait BaseConversions[Base](codec: Codec)(using eqv: =:=[Base, String]) {
   given decodeString: Conversion[Base, String] = base => codec.decodeString(eqv(base)).toOption.get
 
   def unapply(str: String): Option[Base] = codec.decode(str).map(encode(_)).toOption
-  def apply(base: Base): String = eqv(base)
+  def apply(base: Base): String          = eqv(base)
 }

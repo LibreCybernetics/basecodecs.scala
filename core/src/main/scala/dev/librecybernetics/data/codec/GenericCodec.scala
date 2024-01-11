@@ -15,25 +15,29 @@ private[data] case class GenericCodec(
     basePower: BasePower,
     padding: Option[Char]
 ) extends Codec:
-  def encode(bytes: Array[Byte]): String =
-    val stringBuilder = StringBuilder()
 
+  //////////////
+  // Encoding //
+  //////////////
+
+  def encode(bytes: Array[Byte]): String =
     // Main content
-    // NOTE: toBase(basePower) should always be encodable by the alphabet
-    val encoded = toBase(bytes, basePower).map(alphabet(_))
-    stringBuilder.appendAll(encoded)
+    val encoded = toBase(bytes, basePower, alphabet)
 
     // Padding
-    val fillSize = {
+
+    val fillSize =
       val bs = blockSize(basePower)
       if (encoded.length % bs == 0) 0 else bs - (encoded.length % bs)
-    }
-    val pad      = padding match
+    end fillSize
+
+    val pad = padding match
       case Some(c) => Array.fill(fillSize)(c)
       case None    => Array.emptyCharArray
-    stringBuilder.appendAll(pad)
+    end pad
 
-    stringBuilder.toString()
+    // Final
+    String(encoded ++ pad)
   end encode
 
   //////////////
@@ -45,13 +49,12 @@ private[data] case class GenericCodec(
   ](string: String): F[Array[Byte]] =
     val merr: ApplicativeError[F, CodecError] = implicitly
 
-    def padLength = string.reverseIterator.takeWhile(padding.contains).length
+    val input     = string.toCharArray
+    val padLength = padding match
+      case Some(padding) => input.reverseIterator.takeWhile(padding == _).size
+      case None          => 0
+    end padLength
 
-    try
-      val input = string.toCharArray
-        .dropRight(padLength)
-        .map(alphabet.reverse(_))
-      merr.pure(fromBase(input, basePower))
+    try merr.pure(fromBase(input.dropRight(padLength), basePower, alphabet.flip))
     catch case e: UnrecognizedChar => merr.raiseError(e)
-    end try
 end GenericCodec
