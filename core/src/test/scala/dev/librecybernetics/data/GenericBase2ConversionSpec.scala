@@ -8,6 +8,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import dev.librecybernetics.data.util.*
+import dev.librecybernetics.data.alphabet.RFC4648.base64
 
 class GenericBase2ConversionSpec extends AnyWordSpec with ScalaCheckPropertyChecks:
   def genericExample(input: String, expected: Map[BasePower, Array[Byte]]): Assertion =
@@ -15,18 +16,18 @@ class GenericBase2ConversionSpec extends AnyWordSpec with ScalaCheckPropertyChec
 
   def genericExample(input: Array[Byte], expected: Map[BasePower, Array[Byte]]): Assertion =
     forAll(Table("basePower" -> "encodedValues", expected.toSeq*)) { (base: BasePower, expected: Array[Byte]) =>
-      val encoded = toBase(input, base)
-      val decoded = fromBase(expected, base)
+      val encoded = toBase(input, base, base64)
+      val decoded = fromBase(expected.map(base64(_)), base, base64.flip)
 
       decoded shouldBe input
-      encoded shouldBe expected
+      encoded shouldBe expected.map(base64(_))
     }
   end genericExample
 
   def fromTo(basePower: BasePower): Assertion =
     forAll(randomByteArray(255), MinSuccessful(10000)) { (input: Array[Byte]) =>
-      val converted = toBase(input, basePower)
-      val back      = fromBase(converted, basePower)
+      val converted = toBase(input, basePower, base64)
+      val back      = fromBase(converted, basePower, base64.flip)
       input shouldBe back
     }
 

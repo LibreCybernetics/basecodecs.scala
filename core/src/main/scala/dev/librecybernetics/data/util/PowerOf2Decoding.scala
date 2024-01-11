@@ -1,10 +1,13 @@
 package dev.librecybernetics.data.util
 
+import dev.librecybernetics.data.FnBijection
+
 import scala.annotation.tailrec
 
 def fromBase(
-    input: Array[Byte],
-    basePower: BasePower
+    input: Array[Char],
+    basePower: BasePower,
+    alphabet: FnBijection[Char, Byte]
 ): Array[Byte] =
   val result = Array.ofDim[Byte]((input.length * basePower) / 8)
 
@@ -14,10 +17,10 @@ def fromBase(
     if (diff > 0) {
       val resultOffset = (offset * 6) / 8
 
-      val in1 = input(offset)
-      val in2 = input(offset + 1)
-      val in3 = if (diff > 2) input(offset + 2) else 0.toByte
-      val in4 = if (diff > 3) input(offset + 3) else 0.toByte
+      val in1 = alphabet(input(offset))
+      val in2 = alphabet(input(offset + 1))
+      val in3 = if (diff > 2) alphabet(input(offset + 2)) else 0.toByte
+      val in4 = if (diff > 3) alphabet(input(offset + 3)) else 0.toByte
 
       val byte1 = ((in1 << 2) | ((in2 >> 4) & 0x03)).toByte
       result.update(resultOffset, byte1)
@@ -37,7 +40,7 @@ def fromBase(
   @tailrec
   def fromBasePartial(offset: Int): Unit =
     if (offset < input.length) {
-      val x            = input(offset)
+      val x            = alphabet(input(offset))
       val bits         = offset * basePower
       val resultOffset = bits / 8
       val missingBits  = 8 - (bits % 8)
