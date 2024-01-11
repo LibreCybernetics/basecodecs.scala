@@ -27,3 +27,7 @@ addSbtPlugin("pl.project13.scala" % "sbt-jmh"       % "0.4.7")
 
 addSbtPlugin("com.github.sbt" % "sbt-ci-release"     % "1.5.12")
 addSbtPlugin("com.github.sbt" % "sbt-github-actions" % "0.22.0")
+
+if (sys.env.isDefinedAt("GITHUB_ACTION"))
+  Def.settings(addSbtPlugin("net.virtual-void" % "sbt-hackers-digest" % "0.1.2"))
+else Nil
