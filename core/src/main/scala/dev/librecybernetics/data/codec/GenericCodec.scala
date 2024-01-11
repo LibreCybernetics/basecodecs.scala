@@ -49,10 +49,12 @@ private[data] case class GenericCodec(
   ](string: String): F[Array[Byte]] =
     val merr: ApplicativeError[F, CodecError] = implicitly
 
-    def padLength = string.reverseIterator.takeWhile(padding.contains).length
+    val input     = string.toCharArray
+    val padLength = padding match
+      case Some(padding) => input.reverseIterator.takeWhile(padding == _).size
+      case None          => 0
+    end padLength
 
-    try
-      val input = string.toCharArray.dropRight(padLength)
-      merr.pure(fromBase(input, basePower, alphabet.flip))
+    try merr.pure(fromBase(input.dropRight(padLength), basePower, alphabet.flip))
     catch case e: UnrecognizedChar => merr.raiseError(e)
 end GenericCodec
